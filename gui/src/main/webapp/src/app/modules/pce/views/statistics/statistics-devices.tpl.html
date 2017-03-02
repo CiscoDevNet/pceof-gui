@@ -1,0 +1,52 @@
+<section class="filter-container">
+    <div layout="row">
+        <!-- SELECT SUB-STATISTICS TYPE -->
+        <md-input-container ng-show="selectedStatistics.main.subStatistics.length">
+            <label>Select statistics type</label>
+            <md-select ng-model="selectedStatistics.sub">
+                <md-option ng-repeat="subStatistic in selectedStatistics.main.subStatistics" ng-value="subStatistic">
+                    {{subStatistic.name}}
+                </md-option>
+            </md-select>
+        </md-input-container>
+    </div>
+
+    <!-- SELECT VISIBLE COLUMNS -->
+    <div layout="row" ng-show="table.columns">
+        <section layout="row" layout-align="left center" class="device-selector-wrapper">
+            <label class="md-float-label">Choose visible columns:</label>
+            <div
+                    isteven-multi-select
+                    input-model="table.columns"
+                    output-model="table.vColumns"
+                    button-label="name"
+                    item-label="name"
+                    tick-property="show"
+                    search-property="name"
+                    >
+            </div>
+        </section>
+    </div>
+
+</section>
+
+<!-- TABLE DATA SELECTED BY DEVICES -->
+<section ng-if="table.data && table.vColumns">
+    <md-table-container >
+        <table md-table>
+            <thead md-head md-order="tableOrder">
+                <tr md-row>
+                    <th md-column ng-repeat="column in table.vColumns"  md-order-by="{{column.name}}"><span>{{column.name}}</span></th>
+                </tr>
+            </thead>
+            <tbody md-body>
+                <tr md-row ng-repeat="data in table.vData | orderBy: tableOrder"><!--| filter: query.filter | limitTo: query.limit : (query.page -1) * query.limit-->
+                    <td md-cell ng-repeat="column in table.vColumns">{{data[column.name]}}</td>
+                </tr>
+            </tbody>
+        </table>
+    </md-table-container>
+
+    <!--<md-table-pagination md-limit="query.limit" md-page="query.page" md-total="{{ table.vData.length }}" md-options="[1,2,5,10]" md-page-select="options.pageSelector" md-boundary-links="options.boundaryLinks"></md-table-pagination>-->
+</section>
+

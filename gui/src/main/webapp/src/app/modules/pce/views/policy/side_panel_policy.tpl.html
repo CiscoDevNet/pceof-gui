@@ -1,0 +1,443 @@
+<section layout="column" class="h100" ng-controller="PolicyCtrl">
+    <md-sidenav class="md-sidenav-right md-whiteframe-z2 h100" md-component-id="right" md-is-locked-open="sidePanelPage">
+        <md-toolbar>
+            <div class="md-toolbar-tools">
+                <h2>
+                    <span>Policy</span>
+                </h2>
+                <span flex></span>
+                <md-button ng-click="closeSidePanel()" class="md-button">Close panel</md-button>
+            </div>
+        </md-toolbar>
+        <md-tabs flex>
+            <md-tab label="Config" md-on-select="changeTabContent('policyList')">
+                <!-- Config Policy List -->
+                <div layout-fill layout="row" ng-show="tabContent === 'policyList'">
+                    <md-list layout-fill>
+                        <md-list-item class="md-2-line" ng-repeat="policy in policyListConfig.data | orderBy: 'data[\'policy-id\']'" layout="row"
+                                      ng-click="changeTabContent('policyDetail', 'policy', policy)">
+                            <div class="layout-padding-r10">
+                                <h3>{{ policy.type | limitTo: 1 | uppercase}}</h3>
+                                <md-tooltip md-direction="right">
+                                    {{ policy.type }}
+                                </md-tooltip>
+                            </div>
+                            <div class="md-list-item-text" flex>
+                                <h3>{{policy.data['policy-id']}} </h3>
+                                <p>Priority: {{ policy.data.priority}} </p>
+                            </div>
+                        </md-list-item>
+                        <md-fab-speed-dial md-direction="up" class="md-scale md-fab-bottom-right">
+                            <md-fab-trigger>
+                                <md-button class="md-fab" aria-label="Policy menu">
+                                    <i class="material-icons">view_headline</i>
+                                </md-button>
+                            </md-fab-trigger>
+                            <md-fab-actions>
+                                <md-button class="md-fab md-raised md-mini" aria-label="Add policy"
+                                           ng-click="addEditPolicyDialog()">
+                                    <i class="material-icons">add</i>
+                                </md-button>
+                                <md-button class="md-fab md-raised md-mini" aria-label="Reload config policies"
+                                           ng-click="reloadConfigPolicy()">
+                                    <i class="material-icons">refresh</i>
+                                </md-button>
+                            </md-fab-actions>
+                        </md-fab-speed-dial>
+                    </md-list>
+                </div>
+                <!-- Config Policy Detail -->
+                <div layout-fill layout="row" ng-show="tabContent === 'policyDetail'">
+                    <md-content layout-fill >
+                        <div layout="row" class="layout-padding-lr15">
+                            <ul class="breadcrumbs">
+                                <li class="breadcrumb" ng-click="changeTabContent('policyList')">Policies</li>
+                                <li class="breadcrumb"><i class="material-icons">keyboard_arrow_right</i></li>
+                                <li class="breadcrumb">{{selectedObjects.policy.data['policy-id']}}</li>
+                            </ul>
+                        </div>
+                        <md-divider></md-divider>
+                        <md-subheader class="md-primary">Policy info</md-subheader>
+                        <div layout="row" class="layout-padding-lr15">
+                            <span flex="50"><strong>Policy ID</strong></span><span flex>{{selectedObjects.policy.data['policy-id']}}</span>
+                        </div>
+                        <div layout="row" class="layout-padding-lr15">
+                            <span flex="50"><strong>Policy type</strong></span><span flex>{{selectedObjects.policy.type}}</span>
+                        </div>
+                        <div layout="row" class="layout-padding-lr15">
+                            <span flex="50"><strong>Priority</strong></span><span flex>{{selectedObjects.policy.data.priority}}</span>
+                        </div>
+                        <div layout="row" class="layout-padding-lr15">
+                            <span flex="50"><strong>Kind</strong></span><span flex>{{selectedObjects.policy.data['flow-attributes'].kind}}</span>
+                        </div>
+                        <div layout="row" class="layout-padding-lr15" ng-if="selectedObjects.policy.data['flow-spec'].source['ip-prefix']">
+                            <span flex="50"><strong>Source prefix</strong></span><span flex>{{selectedObjects.policy.data['flow-spec'].source['ip-prefix']}}</span>
+                        </div>
+                        <div layout="row" class="layout-padding-lr15" ng-if="selectedObjects.policy.data['flow-spec'].source['node-id']">
+                            <span flex="50"><strong>Source node</strong></span><span flex>{{selectedObjects.policy.data['flow-spec'].source['node-id']}}</span>
+                        </div>
+                        <div layout="row" class="layout-padding-lr15" ng-if="selectedObjects.policy.data['flow-spec'].source['tp-id']">
+                            <span flex="50"><strong>Source port</strong></span><span flex>{{selectedObjects.policy.data['flow-spec'].source['tp-id']}}</span>
+                        </div>
+                        <div layout="row" class="layout-padding-lr15">
+                            <span flex="50"><strong>Destination prefix</strong></span><span flex>{{selectedObjects.policy.data['flow-spec'].destination['ip-prefix']}}</span>
+                        </div>
+                        <md-divider ng-if="!$last" style="margin-top: 10px;"></md-divider>
+                        <md-subheader class="md-primary portsHeader">
+                            <div layout="row" class="">
+                                <h3><span>Path Bundles ({{selectedObjects.policy.data['path-bundle'].data.length}})</span></h3>
+                                <span flex></span>
+
+                                <i class="icon-collapse-alt"></i>
+                                <md-button ng-click="selectedObjects.policy.data['path-bundle'].expandAll()" class="md-button md-primary">
+                                    <md-tooltip md-direction="bottom">
+                                        Expand all
+                                    </md-tooltip>
+                                    <i class="fa fa-expand"></i>
+                                </md-button>
+                                <md-button ng-click="selectedObjects.policy.data['path-bundle'].collapseAll()" class="md-button md-primary">
+                                    <md-tooltip md-direction="bottom">
+                                        Collapse all
+                                    </md-tooltip>
+                                    <i class="fa fa-compress"></i>
+                                </md-button>
+                            </div>
+                        </md-subheader>
+                        <div>
+                            <md-list class="portsList">
+                                <md-list-item class="md-2-line" layout="row" ng-click="pathBundle.toggleExpanded()"
+                                              ng-repeat="pathBundle in selectedObjects.policy.data['path-bundle'].data">
+                                    <div class="md-list-item-text" flex>
+                                        <h3>{{pathBundle.data['bundle-id']}} </h3>
+                                        <md-content layout-margin ng-show="pathBundle.expanded" class="md-whiteframe-2dp flex portDetails">
+                                            <div layout="row" class="">
+                                                <span flex="50"><strong>Role</strong></span><span flex>{{pathBundle.data.role}}</span>
+                                            </div>
+                                            <div layout="row" class="">
+                                                <span flex="50"><strong>Default use</strong></span><span flex>{{pathBundle.data.constraints['default-use']}}</span>
+                                            </div>
+                                            <div layout="row" class="padding-lr15" ng-if="selectedObjects.policy.type === 'Prefix' || selectedObjects.policy.type === 'Tunnel'">
+                                                <span flex="50"><strong>Max. path cost</strong></span><span flex>{{pathBundle.data.constraints['max-path-cost']}}</span>
+                                            </div>
+                                            <div layout="row" class="padding-lr15">
+                                                <span flex="50"><strong>Active Path Bundle</strong></span><span flex>{{pathBundle.data['active-bundle-id']}}</span>
+                                            </div>
+                                            <div layout="row" class="padding-lr15">
+                                                <span flex="50"><strong>Direction</strong></span><span flex>{{pathBundle.data.direction}}</span>
+                                            </div>
+                                        </md-content>
+                                    </div>
+                                </md-list-item>
+                            </md-list>
+                        </div>
+
+
+
+                    </md-content>
+                    <md-fab-speed-dial md-direction="up" class="md-scale md-fab-bottom-right">
+                        <md-fab-trigger>
+                            <md-button class="md-fab" aria-label="Policy menu">
+                                <i class="material-icons">view_headline</i>
+                            </md-button>
+                        </md-fab-trigger>
+                        <md-fab-actions>
+                            <md-button class="md-fab md-raised md-mini" aria-label="Add/Edit policy"
+                                       ng-click="addEditPolicyDialog(selectedObjects.policy)">
+                                <i class="material-icons">mode_edit</i>
+                            </md-button>
+                            <md-button class="md-fab md-raised md-mini" aria-label="Delete policy"
+                                       ng-click="deletePolicyDialog(selectedObjects.policy)">
+                                <i class="material-icons">clear</i>
+                            </md-button>
+                        </md-fab-actions>
+                    </md-fab-speed-dial>
+                </div>
+            </md-tab>
+
+            <md-tab label="Operational" md-on-select="changeTabContent('policyList')">
+                <!-- Operational Policy List -->
+                <div layout-fill layout="row" ng-show="tabContent === 'policyList'">
+                    <md-list layout-fill>
+                        <md-list-item class="md-2-line" ng-repeat="policy in policyListOperational.data | orderBy: 'data[\'policy-id\']'" layout="row"
+                                      ng-click="changeTabContent('policyDetail', 'policy', policy)">
+                            <i class="fa fa-circle status-circle {{policy.data.status}}" flex="5">
+                                <md-tooltip md-direction="top">
+                                    Status: {{policy.data.status}}
+                                </md-tooltip>
+                            </i>
+                            <div class="layout-padding-r10">
+                                <h3>{{ policy.type | limitTo: 1 | uppercase}}</h3>
+                                <md-tooltip md-direction="right">
+                                    {{ policy.type }}
+                                </md-tooltip>
+                            </div>
+                            <div class="md-list-item-text" flex>
+                                <h3>{{policy.data['policy-id']}} </h3>
+                                <p>Priority: {{ policy.data.priority}} </p>
+                            </div>
+                        </md-list-item>
+                        <md-fab-speed-dial md-direction="up" class="md-scale md-fab-bottom-right">
+                            <md-fab-trigger>
+                                <md-button class="md-fab" aria-label="Policy menu">
+                                    <i class="material-icons">view_headline</i>
+                                </md-button>
+                            </md-fab-trigger>
+                            <md-fab-actions>
+                                <md-button class="md-fab md-raised md-mini" aria-label="Reload config policies"
+                                           ng-click="reloadOperationalPolicy()">
+                                    <i class="material-icons">refresh</i>
+                                </md-button>
+                            </md-fab-actions>
+                        </md-fab-speed-dial>
+                    </md-list>
+                </div>
+                <!-- Operational Policy Detail -->
+                <div layout="row" ng-show="tabContent === 'policyDetail'">
+                    <md-content layout-fill >
+                        <div layout="row" class="layout-padding-lr15">
+                            <ul class="breadcrumbs">
+                                <li class="breadcrumb" ng-click="changeTabContent('policyList')">Policies</li>
+                                <li class="breadcrumb"><i class="material-icons">keyboard_arrow_right</i></li>
+                                <li class="breadcrumb">{{selectedObjects.policy.data['policy-id']}}</li>
+                            </ul>
+                        </div>
+                        <md-divider></md-divider>
+                        <md-subheader class="md-primary">Policy info</md-subheader>
+                        <div layout="row" class="layout-padding-lr15">
+                            <span flex="50"><strong>Policy ID</strong></span><span flex>{{selectedObjects.policy.data['policy-id']}}</span>
+                        </div>
+                        <div layout="row" class="layout-padding-lr15">
+                            <span flex="50"><strong>Policy type</strong></span><span flex>{{selectedObjects.policy.type}}</span>
+                        </div>
+                        <div layout="row" class="layout-padding-lr15">
+                            <span flex="50"><strong>Status</strong></span><span flex>{{selectedObjects.policy.data.status}}</span>
+                        </div>
+                        <div layout="row" class="layout-padding-lr15">
+                            <span flex="50"><strong>Priority</strong></span><span flex>{{selectedObjects.policy.data.priority}}</span>
+                        </div>
+                        <div layout="row" class="layout-padding-lr15">
+                            <span flex="50"><strong>Kind</strong></span><span flex>{{selectedObjects.policy.data['flow-attributes'].kind}}</span>
+                        </div>
+                        <div layout="row" class="layout-padding-lr15" ng-if="selectedObjects.policy.data['flow-spec'].source['ip-prefix']">
+                            <span flex="50"><strong>Source prefix</strong></span><span flex>{{selectedObjects.policy.data['flow-spec'].source['ip-prefix']}}</span>
+                        </div>
+                        <div layout="row" class="layout-padding-lr15" ng-if="selectedObjects.policy.data['flow-spec'].source['node-name']">
+                            <span flex="50"><strong>Source node</strong></span><span flex>{{selectedObjects.policy.data['flow-spec'].source['node-name']}}</span>
+                        </div>
+                        <div layout="row" class="layout-padding-lr15" ng-if="selectedObjects.policy.data['flow-spec'].source['tp-id']">
+                            <span flex="50"><strong>Source port</strong></span><span flex>{{selectedObjects.policy.data['flow-spec'].source['tp-id']}}</span>
+                        </div>
+                        <div layout="row" class="layout-padding-lr15">
+                            <span flex="50"><strong>Destination prefix</strong></span><span flex>{{selectedObjects.policy.data['flow-spec'].destination['ip-prefix']}}</span>
+                        </div>
+                        <md-divider ng-if="!$last" style="margin-top: 10px;"></md-divider>
+                        <md-subheader class="md-primary">Path Bundles ({{ selectedObjects.policy.data['path-bundle'].data.length }})</md-subheader>
+                        <div>
+                            <md-list>
+                                <md-list-item class="md-2-line" layout="row" ng-click="changeTabContent('pathBundleDetail', 'pathBundle', pathBundle)"
+                                              ng-repeat="pathBundle in selectedObjects.policy.data['path-bundle'].data">
+                                    <i class="fa fa-circle status-circle {{pathBundle.data.status}}" flex="5">
+                                        <md-tooltip md-direction="top">
+                                            Status: {{pathBundle.data.status}}
+                                        </md-tooltip>
+                                    </i>
+                                    <div class="md-list-item-text" flex>
+                                        <h3>{{pathBundle.data['bundle-id']}} </h3>
+                                        <p>Role: {{ pathBundle.data.role}} </p>
+                                    </div>
+                                </md-list-item>
+                            </md-list>
+                        </div>
+                    </md-content>
+                </div>
+                <!-- Operational Path Bundle Detail -->
+                <div layout="row" ng-show="tabContent === 'pathBundleDetail'">
+                    <md-content layout-fill >
+                        <div layout="row" class="layout-padding-lr15">
+                            <ul class="breadcrumbs">
+                                <li class="breadcrumb" ng-click="changeTabContent('policyList')">Policies</li>
+                                <li class="breadcrumb"><i class="material-icons">keyboard_arrow_right</i></li>
+                                <li class="breadcrumb" ng-click="changeTabContent('policyDetail', 'policy', selectedObjects.policy)">{{selectedObjects.policy.data['policy-id']}}</li>
+                                <li class="breadcrumb"><i class="material-icons">keyboard_arrow_right</i></li>
+                                <li class="breadcrumb" >{{selectedObjects.pathBundle.data['bundle-id']}}</li>
+                            </ul>
+                        </div>
+                        <md-divider></md-divider>
+                        <md-subheader class="md-primary">Path Bundle info</md-subheader>
+                        <div layout="row" class="layout-padding-lr15">
+                            <span flex="50"><strong>Path Bundle ID</strong></span><span flex>{{selectedObjects.pathBundle.data['bundle-id']}}</span>
+                        </div>
+                        <div layout="row" class="layout-padding-lr15">
+                            <span flex="50"><strong>Status</strong></span><span flex>{{selectedObjects.pathBundle.data.status}}</span>
+                        </div>
+                        <div layout="row" class="layout-padding-lr15">
+                            <span flex="50"><strong>Role</strong></span><span flex>{{selectedObjects.pathBundle.data.role}}</span>
+                        </div>
+                        <div layout="row" class="layout-padding-lr15">
+                            <span flex="50"><strong>Default use</strong></span><span flex>{{selectedObjects.pathBundle.data.constraints['default-use']}}</span>
+                        </div>
+                        <div layout="row" class="layout-padding-lr15" ng-if="selectedObjects.policy.type === 'Prefix' || selectedObjects.policy.type === 'Tunnel'">
+                            <span flex="50"><strong>Max. path cost</strong></span><span flex>{{selectedObjects.pathBundle.data.constraints['max-path-cost']}}</span>
+                        </div>
+                        <div layout="row" class="layout-padding-lr15">
+                            <span flex="50"><strong>Active Path Bundle</strong></span><span flex>{{selectedObjects.pathBundle.data['active-bundle-id']}}</span>
+                        </div>
+                        <div layout="row" class="layout-padding-lr15">
+                            <span flex="50"><strong>Direction</strong></span><span flex>{{selectedObjects.pathBundle.data.direction}}</span>
+                        </div>
+                        <md-divider ng-if="!$last" style="margin-top: 10px;"></md-divider>
+                        <div ng-if="selectedObjects.policy.type === 'Segment'">
+                            <md-subheader class="md-primary">Segment policies ({{ selectedObjects.pathBundle.data.constraints['segment-policy'].data.length }})</md-subheader>
+                            <div layout-fill layout="row">
+                                <md-list layout-fill>
+                                    <md-list-item class="md-2-line" layout="row"
+                                                  ng-repeat="segmentPolicy in selectedObjects.pathBundle.data.constraints['segment-policy'].data"
+                                                  ng-click="changeTabContent('segmentPolicyDetail', 'segmentPolicy', segmentPolicy)">
+                                        <div class="md-list-item-text" flex>
+                                            <h3>{{ segmentPolicy.data['segment-name'] }} </h3>
+                                            <p>Use: {{ segmentPolicy.data['use-override']}} </p>
+                                        </div>
+                                    </md-list-item>
+                                </md-list>
+                            </div>
+                        </div>
+                        <div ng-if="selectedObjects.policy.type === 'Element'">
+                            <md-subheader class="md-primary">Element policies ({{ selectedObjects.pathBundle.data.constraints['element-policy'].data.length }})</md-subheader>
+                            <div layout-fill layout="row">
+                                <md-list layout-fill>
+                                    <md-list-item class="md-3-line" layout="row"
+                                                  ng-repeat="elementPolicy in selectedObjects.pathBundle.data.constraints['element-policy'].data">
+                                        <div class="md-list-item-text" flex>
+                                            <h3>{{ elementPolicy.data['id'] }} </h3>
+                                            <p>Use: {{ elementPolicy.data['use-override']}} </p>
+                                            <p>Element type: {{ elementPolicy.data['element-type']}} </p>
+                                        </div>
+                                    </md-list-item>
+                                </md-list>
+                            </div>
+                        </div>
+                        <div >
+                            <md-subheader class="md-primary">Paths ({{ selectedObjects.pathBundle.data['path'].data.length }})</md-subheader>
+                            <div layout-fill layout="row">
+                                <md-list layout-fill>
+                                    <md-list-item class="md-2-line" layout="row"
+                                                  ng-repeat="path in selectedObjects.pathBundle.data['path'].data"
+                                                  ng-click="changeTabContent('pathDetail', 'path', path)"
+                                                  ng-mouseenter="drawPathFromHops(path.data)">
+                                        <i class="fa fa-circle status-circle {{path.data.status}}" flex="5">
+                                            <md-tooltip md-direction="top">
+                                                Status: {{path.data.status}}
+                                            </md-tooltip>
+                                        </i>
+                                        <div class="md-list-item-text" flex>
+                                            <h3>{{ getNameForPath(path) }} </h3>
+                                            <p>Status: {{ path.data.status}} </p>
+                                        </div>
+                                    </md-list-item>
+                                </md-list>
+                            </div>
+                        </div>
+                    </md-content>
+                </div>
+                <!-- Operational Path Detail -->
+                <div layout="row" ng-show="tabContent === 'pathDetail'">
+                    <md-content layout-fill >
+                        <div layout="row" class="layout-padding-lr15">
+                            <ul class="breadcrumbs">
+                                <li class="breadcrumb" ng-click="changeTabContent('policyList')">Policies</li>
+                                <li class="breadcrumb"><i class="material-icons">keyboard_arrow_right</i></li>
+                                <li class="breadcrumb" ng-click="changeTabContent('policyDetail', 'policy', selectedObjects.policy)">{{selectedObjects.policy.data['policy-id']}}</li>
+                                <li class="breadcrumb"><i class="material-icons">keyboard_arrow_right</i></li>
+                                <li class="breadcrumb" ng-click="changeTabContent('pathBundleDetail', 'pathBundle', selectedObjects.pathBundle)">{{selectedObjects.pathBundle.data['bundle-id']}}</li>
+                                <li class="breadcrumb"><i class="material-icons">keyboard_arrow_right</i></li>
+                                <li class="breadcrumb" >{{getNameForPath(selectedObjects.path)}}</li>
+                            </ul>
+                        </div>
+                        <md-divider></md-divider>
+                        <md-subheader class="md-primary">Path info</md-subheader>
+                        <div layout="row" class="layout-padding-lr15">
+                            <span flex="50"><strong>Display name</strong></span><span flex>{{getNameForPath(selectedObjects.path)}}</span>
+                        </div>
+                        <div layout="row" class="layout-padding-lr15">
+                            <span flex="50"><strong>Path name</strong></span><span flex>{{selectedObjects.path.data['path-name']}}</span>
+                        </div>
+                        <div layout="row" class="layout-padding-lr15">
+                            <span flex="50"><strong>Status</strong></span><span flex>{{selectedObjects.path.data.status}}</span>
+                        </div>
+                        <md-divider ng-if="!$last" style="margin-top: 10px;"></md-divider>
+                        <md-subheader class="md-primary">Hops ({{ selectedObjects.path.data.hop.data.length }})</md-subheader>
+                        <div layout-fill layout="row">
+                            <md-list layout-fill>
+                                <md-list-item class="md-3-line" layout="row"
+                                              ng-repeat="hop in selectedObjects.path.data.hop.data | orderBy: 'data.order'"
+                                              ng-mouseenter="highlightNode(getLabelForNode(hop.data['node-name']))"
+                                              ng-mouseleave="fadeInAllLayers()"
+                                              ng-click="dummy">
+                                    <div layout-padding>
+                                        <h3>{{ hop.data.order}}</h3>
+                                        <md-tooltip md-direction="right">
+                                            Order
+                                        </md-tooltip>
+                                    </div>
+                                    <div class="md-list-item-text" flex>
+                                        <h3>{{ getLabelForNode(hop.data['node-name']) }} </h3>
+                                        <p>In port: {{ hop.data['in-tp-id']}} </p>
+                                        <p>Out port: {{ hop.data['out-tp-id']}} </p>
+                                    </div>
+                                </md-list-item>
+                            </md-list>
+                        </div>
+                    </md-content>
+                </div>
+                <!-- Operational Segment Policy Detail -->
+                <div layout="row" ng-show="tabContent === 'segmentPolicyDetail'">
+                    <md-content layout-fill >
+                        <div layout="row" class="layout-padding-lr15">
+                            <ul class="breadcrumbs">
+                                <li class="breadcrumb" ng-click="changeTabContent('policyList')">Policies</li>
+                                <li class="breadcrumb"><i class="material-icons">keyboard_arrow_right</i></li>
+                                <li class="breadcrumb" ng-click="changeTabContent('policyDetail', 'policy', selectedObjects.policy)">{{selectedObjects.policy.data['policy-id']}}</li>
+                                <li class="breadcrumb"><i class="material-icons">keyboard_arrow_right</i></li>
+                                <li class="breadcrumb" ng-click="changeTabContent('pathBundleDetail', 'pathBundle', selectedObjects.pathBundle)">{{selectedObjects.pathBundle.data['bundle-id']}}</li>
+                                <li class="breadcrumb"><i class="material-icons">keyboard_arrow_right</i></li>
+                                <li class="breadcrumb" >{{ selectedObjects.segmentPolicy.data['segment-name'] }}</li>
+                            </ul>
+                        </div>
+                        <md-divider></md-divider>
+                        <md-subheader class="md-primary">Segment policy info</md-subheader>
+                        <div layout="row" class="layout-padding-lr15">
+                            <span flex="50"><strong>Segment name</strong></span><span flex>{{selectedObjects.segmentPolicy.data['segment-name']}}</span>
+                        </div>
+                        <div layout="row" class="layout-padding-lr15">
+                            <span flex="50"><strong>Use override</strong></span><span flex>{{selectedObjects.segmentPolicy.data['use-override']}}</span>
+                        </div>
+                        <div layout="row" class="layout-padding-lr15">
+                            <span flex="50"><strong>Segment type</strong></span><span flex>{{selectedObjects.segmentPolicy.data['segment-type']}}</span>
+                        </div>
+                        <md-divider ng-if="!$last" style="margin-top: 10px;"></md-divider>
+                        <md-subheader class="md-primary">Segments ({{ selectedObjects.segmentPolicy.data.segment.data.length }})</md-subheader>
+                        <div layout-fill layout="row">
+                            <md-list layout-fill>
+                                <md-list-item class="md-2-line" layout="row"
+                                              ng-repeat="segment in selectedObjects.segmentPolicy.data.segment.data | orderBy: 'data.order'"
+
+                                              ng-click="dummy">
+                                    <div class="layout-padding-r10">
+                                        <h3>{{ segment.data.order}}</h3>
+                                        <md-tooltip md-direction="right">
+                                            Order
+                                        </md-tooltip>
+                                    </div>
+                                    <div class="md-list-item-text" flex>
+                                        <h3>{{ getLabelForNode(segment.data.id) }} </h3>
+                                        <p>Element type: {{ segment.data['element-type']}} </p>
+                                    </div>
+                                </md-list-item>
+                            </md-list>
+                        </div>
+                    </md-content>
+                </div>
+            </md-tab>
+        </md-tabs>
+    </md-sidenav>
+</section>

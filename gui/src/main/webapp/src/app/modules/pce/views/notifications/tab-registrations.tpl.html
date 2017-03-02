@@ -1,0 +1,90 @@
+<md-content class="md-padding">
+	<!-- Usual header (toolbar) -->
+	<md-toolbar class="md-table-toolbar md-default">
+		<div class="md-toolbar-tools">
+
+			<h2 class="md-title">List of Registrations</h2>
+			<div flex></div>
+
+			<!-- Search field -->
+			<div layout="row" layout-align="center center" ng-show = "regTableFilter.show">
+				<md-icon class="material-icons">search</md-icon>
+				<form class="ng-pristine ng-valid flex" name="regTableFilter.form">
+					<input class="ng-pristine ng-valid ng-touched" type="text" placeholder="search" ng-model-options="regTableFilter.options" ng-model="regTableQuery.filter" aria-invalid="false">
+				</form>
+				<md-button class="md-icon-button md-ink-ripple" type="button" ng-click="removeRegTableFilter()">
+					<md-icon class="material-icons">close</md-icon>
+					<div class="md-ripple-container"></div>
+				</md-button>
+			</div>
+			<!-- / Search field -->
+
+			<md-button class="md-icon-button" ng-click="regTableFilter.show = true" ng-hide = "regTableFilter.show">
+				<md-tooltip>Search</md-tooltip>
+				<md-icon class="material-icons">filter_list</md-icon>
+			</md-button>
+
+			<md-button class="md-icon-button" ng-click="reloadRegistrations()" aria-label="Refresh list of registrations">
+				<md-tooltip>Refresh list</md-tooltip>
+				<md-icon>refresh</md-icon>
+			</md-button>
+
+			<md-button class="md-icon-button" ng-click="addEditRegistration()" aria-label="Create a registration">
+				<md-tooltip>Create new</md-tooltip>
+				<md-icon>add</md-icon>
+			</md-button>
+
+		</div>
+	</md-toolbar>
+	<md-content>
+		<md-table-container ng-show="stats['stat-registration'].data.length">
+			<table md-table>
+				<thead md-head md-order="regTableQuery.order">
+				<tr md-row>
+					<th md-column md-order-by="data['registration-id']"><span>ID</span></th>
+					<th md-column><span>Links</span></th>
+					<th md-column><span>Actions</span></th>
+				</tr>
+				</thead>
+				<tbody md-body ng-repeat="registration in stats['stat-registration'].data | filter: regTableQuery.filter | orderBy: regTableQuery.order | limitTo: regTableQuery.limit : (regTableQuery.page -1) * regTableQuery.limit">
+				<tr md-row>
+					<td md-cell ng-click="openSidePanel('side_panel_registration_detail', registration)" class="pointer">
+						{{ registration.data['registration-id'] }}
+					</td>
+					<td md-cell ng-click="openSidePanel('side_panel_registration_detail', registration)" class="pointer">
+						<div ng-repeat="linkName in registration.data.link">
+							{{ linkName }}<br>
+						</div>
+					</td>
+					<td md-cell>
+						<button class="md-icon-button md-button md-ink-ripple" type="button" ng-click="addEditRegistration( registration )">
+							<md-icon class="material-icons">create</md-icon>
+							<div class="md-ripple-container"></div>
+							<md-tooltip>
+								Edit
+							</md-tooltip>
+						</button>
+						<button class="md-icon-button md-button md-ink-ripple" type="button" ng-click="warnDeleteRegistration( registration )">
+							<md-icon class="material-icons">delete</md-icon>
+							<md-tooltip>
+								Delete
+							</md-tooltip>
+							<div class="md-ripple-container"></div>
+						</button>
+					</td>
+				</tr>
+				</tbody>
+			</table>
+			<md-table-pagination md-limit="regTableQuery.limit"
+								 md-page="regTableQuery.page"
+								 md-options="regTableQuery.options"
+								 md-total="{{stats['stat-registration'].data.length}}"
+								 md-page-select="regTableQuery.pageSelect">
+			</md-table-pagination>
+		</md-table-container>
+		<div ng-show=" stats['stat-registration'].data.length === 0 " class="padding-l25">
+			No registrations found.
+		</div>
+
+	</md-content>
+</md-content>

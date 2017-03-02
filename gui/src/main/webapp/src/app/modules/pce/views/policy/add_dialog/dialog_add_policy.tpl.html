@@ -1,0 +1,19 @@
+<md-dialog ng-cloak>
+    <md-toolbar>
+        <div class="md-toolbar-tools">
+            <h2>Add Policy</h2>
+            <span flex></span>
+            <md-button ng-click="closeDialog()" class="md-button">Close dialog</md-button>
+        </div>
+    </md-toolbar>
+    <md-dialog-content style="width:600px; height:600px; overflow: hidden;" layout="column" flex >
+        <section class="layout-padding-lr15">
+            <ul class="breadcrumbs">
+                <li class="breadcrumb {{$index <= getStepIndex() ? 'active':''}}" ng-repeat="breadcrumb in wizardConfig track by $index">
+                    {{ breadcrumb['step-name']}} <i class="material-icons middle" ng-if="!$last">keyboard_arrow_right</i>
+                </li>
+            </ul>
+        </section>
+        <div layout="column" class="layout-padding-lr15" ng-if="wizardStep" ng-include="viewPath + wizardStep['template-file']" flex></div>
+    </md-dialog-content>
+</md-dialog>

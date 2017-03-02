@@ -1,0 +1,47 @@
+{
+  "data":[
+    {
+      "caption": "Topology",
+      "url": "#/pce/topology",
+      "icon": "usb"
+    },
+    {
+      "caption": "Flows",
+      "url": "#/pce/flow-management",
+      "icon": "tune"
+    },
+    {
+      "caption": "Address mappings",
+      "url": "#/pce/address-mappings",
+      "icon": "directions"
+    },
+    {
+      "caption": "BGP routes",
+      "url": "#/pce/bgp-routes",
+      "icon": "trending_up"
+    },
+    {
+      "caption": "Utilization",
+      "icon": "network_check",
+      "submenu": [
+        {
+          "caption": "Registrations",
+          "url": "#/pce/notifications",
+          "icon": "notifications"
+        },
+        {
+          "caption": "Statistics",
+          "url": "#/pce/statistics",
+          "icon": "equalizer"
+        }
+      ]
+    },
+    {
+      "caption": "Configuration",
+      "url": "#/pce/configuration",
+      "icon": "settings"
+    }
+
+  ]
+
+}

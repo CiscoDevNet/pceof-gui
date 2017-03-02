@@ -1,0 +1,92 @@
+{
+  "list" : [
+    {
+      "name": "Link statistics",
+      "funct": "updateLinkStats",
+      "type": "LINK",
+      "subStatistics": [],
+      "template": "links"
+    },
+    {
+      "name": "Table statistics",
+      "funct": "updateTableStatistics",
+      "type": "TABLE",
+      "subStatistics": [
+        {
+          "name": "Flow stats",
+          "funct": "getFlowStatistics"
+        },
+        {
+          "name": "Flow table stats",
+          "funct": "getFlowTableStatistics"
+        },
+        {
+          "name": "Aggregate flow stats",
+          "funct": "getAggregateFlowStatistics"
+        }
+      ],
+      "template": "devices"
+    },
+    {
+      "name": "Ports statistics",
+      "funct": "updateGeneralStats",
+      "subFunct": "generalStatisticsByNodes",
+      "serviceFunct": "portStatisticsByNode",
+      "container": "opendaylight-port-statistics:flow-capable-node-connector-statistics",
+      "type": "PORT",
+      "subStatistics": [],
+      "template": "devices"
+    },
+    {
+      "name": "Queue statistics",
+      "funct": "updateGeneralStats",
+      "subFunct": "generalStatisticsByNodes",
+      "serviceFunct": "queueStatisticsByNode",
+      "parentContainer": "flow-node-inventory:queue",
+      "container": "opendaylight-queue-statistics:flow-capable-node-connector-queue-statistics",
+      "type": "QUEUE",
+      "subStatistics": [],
+      "template": "devices"
+    },
+    {
+      "name": "Group statistics",
+      "funct": "updateGeneralStats",
+      "subFunct": "getGroupMeterStatistics",
+      "parentContainer": "flow-node-inventory:group",
+      "container": "opendaylight-group-statistics:group-statistics",
+      "type": "GROUP",
+      "subStatistics": [],
+      "template": "devices"
+    },
+    {
+      "name": "Meter statistics",
+      "funct": "updateGeneralStats",
+      "subFunct": "getGroupMeterStatistics",
+      "parentContainer": "flow-node-inventory:meter",
+      "container": "opendaylight-meter-statistics:meter-statistics",
+      "type": "METER",
+      "subStatistics": [],
+      "template": "devices"
+    },
+    {
+      "name": "Meter features",
+      "funct": "updateGeneralStats",
+      "subFunct": "getGroupMeterStatistics",
+      "container": "opendaylight-meter-statistics:meter-features",
+      "type": "METERFEATURES",
+      "subStatistics": [],
+      "template": "devices"
+    }
+  ],
+  "linkStatsConfig": {
+    "setup" : {
+      "registration-id": null,
+      "window": 6,
+      "response-type": "individual",
+      "response-units": "link-utilization",
+      "original-samples": false
+    },
+    "response-types": ["individual","aggregate"],
+    "response-units": ["link-utilization","bits-per-second"]
+  }
+}

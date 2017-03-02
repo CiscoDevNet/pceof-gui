@@ -1,0 +1,40 @@
+<form name="policyParametersForm" flex layout="column">
+    <div layout="row">
+        <md-input-container flex="50">
+            <label>Policy ID</label>
+            <input name="policyId" ng-model="policy.data['policy-id']" ng-required="true">
+            <div ng-messages="policyParametersForm.policyId.$error" md-auto-hide="false">
+                <div ng-message="required">Required field</div>
+            </div>
+        </md-input-container>
+        <md-input-container flex>
+            <label>Priority</label>
+            <input name="priority" ng-model="policy.data.priority" ng-required="true">
+            <div ng-messages="policyParametersForm.priority.$error" md-auto-hide="false">
+                <div ng-message="required">Required field</div>
+            </div>
+        </md-input-container>
+    </div>
+    <div layout="row">
+        <md-input-container class="md-block" flex>
+            <label>Policy type</label>
+            <md-select name="type" ng-model="policy.type"
+                       aria-label="Policy type" ng-required="true"
+                       ng-change="getWizardConfig()">
+                <md-option ng-repeat="type in ['Element', 'Prefix', 'Segment', 'Tunnel']" value="{{type}}">
+                    {{type}}
+                </md-option>
+            </md-select>
+            <div ng-messages="policyParametersForm.type.$error" md-auto-hide="false">
+                <div ng-message="required">Required field</div>
+            </div>
+        </md-input-container>
+    </div>
+    <div layout="row" flex></div>
+    <div layout="row">
+        <span flex></span>
+        <md-button ng-disabled="policyParametersForm.$invalid" ng-click="stepForward()">
+            Next
+        </md-button>
+    </div>
+</form>

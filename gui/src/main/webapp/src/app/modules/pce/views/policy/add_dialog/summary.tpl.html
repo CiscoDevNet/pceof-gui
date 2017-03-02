@@ -1,0 +1,66 @@
+<div flex layout="column">
+    <md-subheader class="md-primary">Policy info</md-subheader>
+    <div layout="row" >
+        <span flex="50"><strong>Policy ID</strong></span>
+        <span flex>{{policy.data['policy-id']}}</span>
+    </div>
+    <div layout="row" >
+        <span flex="50"><strong>Policy Type</strong></span>
+        <span flex>{{policy.type}}</span>
+    </div>
+    <div layout="row" >
+        <span flex="50"><strong>Kind</strong></span>
+        <span flex>{{policy.data['flow-attributes'].kind}}</span>
+    </div>
+    <md-subheader class="md-primary">Path Bundles</md-subheader>
+    <div layout="column"  ng-repeat="pb in policy.data['path-bundle'].data">
+        <div layout="row">
+            <span flex="50"><strong>Bundle Id</strong></span>
+            <span flex>{{pb.data['bundle-id']}}</span>
+        </div>
+        <div layout="row">
+            <span flex="50"><strong>Role</strong></span>
+            <span flex>{{pb.data.role}}</span>
+        </div>
+        <md-subheader class="md-primary" ng-if="policy.type === 'Element'">Element Policies</md-subheader>
+        <div layout="column"  ng-repeat="ep in pb.data.constraints['element-policy'].data">
+            <div layout="row">
+                <span flex="50"><strong>Element Id</strong></span>
+                <span flex>{{ep.data.id}}</span>
+            </div>
+            <div layout="row">
+                <span flex="50"><strong>Element Type</strong></span>
+                <span flex>{{ep.data['element-type']}}</span>
+            </div>
+            <div layout="row">
+                <span flex="50"><strong>Use Override</strong></span>
+                <span flex>{{ep.data['use-override']}}</span>
+            </div>
+        </div>
+        <md-subheader class="md-primary" ng-if="policy.type === 'Segment'">Segment Policies</md-subheader>
+        <div layout="column"  ng-repeat="sp in pb.data.constraints['segment-policy'].data">
+            <div layout="row">
+                <span flex="50"><strong>Segment name</strong></span>
+                <span flex>{{sp.data['segment-name']}}</span>
+            </div>
+            <div layout="row">
+                <span flex="50"><strong>Segment Type</strong></span>
+                <span flex>{{sp.data['segment-type']}}</span>
+            </div>
+            <div layout="row">
+                <span flex="50"><strong>Use Override</strong></span>
+                <span flex>{{sp.data['use-override']}}</span>
+            </div>
+        </div>
+    </div>
+    <div layout="row" flex></div>
+    <div layout="row">
+        <span flex></span>
+        <md-button ng-click="stepBack()">
+            Back
+        </md-button>
+        <md-button ng-click="saveData()">
+            Save
+        </md-button>
+    </div>
+</div>

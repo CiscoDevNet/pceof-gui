@@ -1,0 +1,100 @@
+<div ng-if="!displayElementPolicyForm" flex layout="column">
+    <div layout="row">
+        <div class="flex-90 md-subheader md-primary">Element policies ({{ getAllElementPolicies().length || 0 }})</div>
+        <md-button class="md-icon-button" ng-click="showForm('displayElementPolicyForm')" flex>
+            <i class="material-icons">add</i>
+        </md-button>
+    </div>
+    <md-list>
+        <md-list-item class="md-2-line" layout="row" ng-repeat="ep in getAllElementPolicies() track by $index"
+                      ng-click="fillElementPolicyForm(ep, $index)">
+            <div class="md-list-item-text" flex>
+                <h3>{{ep.data['id']}} </h3>
+                <p>Use: {{ ep.data['use-override']}} </p>
+            </div>
+            <div>
+                <md-icon aria-label="Delete Element Policy"
+                         ng-click="deleteElementPolicyFromList(ep)">
+                    <i class="material-icons">clear</i>
+                </md-icon>
+            </div>
+        </md-list-item>
+    </md-list>
+    <div layout="row" flex></div>
+    <div layout="row" >
+        <span flex></span>
+        <md-button ng-click="stepBack()">
+            Back
+        </md-button>
+        <md-button ng-disabled="!policy.data['path-bundle'].data.length" ng-click="stepForward()">
+            Next
+        </md-button>
+    </div>
+</div>
+
+<form name="elementPolicyForm" ng-if="displayElementPolicyForm" flex layout="column">
+    <div layout="row">
+        <div class="md-subheader md-primary">Element policy</div>
+    </div>
+    <div layout="row">
+        <md-input-container flex="50">
+            <label>Path Bundle</label>
+            <md-select name="pathBundleId" ng-model="elementPolicy.pathBundleId"
+                       aria-label="Element Policy, property Path Bundle Id"
+                       ng-required="true">
+                <md-option ng-repeat="pb in policy.data['path-bundle'].data" value="{{pb.data['bundle-id']}}">
+                    {{pb.data['bundle-id']}}
+                </md-option>
+            </md-select>
+            <div ng-messages="elementPolicyForm.pathBundleId.$error" md-auto-hide="false">
+                <div ng-message="required">Required field</div>
+            </div>
+        </md-input-container>
+        <md-input-container flex>
+            <label>Element Id</label>
+            <input name="elementId" ng-model="elementPolicy.data.id"
+                   ng-required="true">
+            <div ng-messages="elementPolicyForm.elementId.$error" md-auto-hide="false">
+                <div ng-message="required">Required field</div>
+            </div>
+        </md-input-container>
+    </div>
+    <div layout="row">
+        <md-input-container flex="50">
+            <label>Element Type</label>
+            <md-select name="elementType" ng-model="elementPolicy.data['element-type']"
+                       aria-label="Path bundle, property element type"
+                       ng-required="true">
+                <md-option ng-repeat="elementtype in ['node', 'link', 'link-group']" value="{{elementtype}}">
+                    {{elementtype}}
+                </md-option>
+            </md-select>
+            <div ng-messages="elementPolicyForm.elementType.$error" md-auto-hide="false">
+                <div ng-message="required">Required field</div>
+            </div>
+        </md-input-container>
+        <md-input-container flex>
+            <label>Use Override</label>
+            <md-select name="useOverride" ng-model="elementPolicy.data['use-override']"
+                       aria-label="Path bundle, property use-override"
+                       ng-required="true">
+                <md-option ng-repeat="useoverride in ['must-use', 'must-not-use', 'may-use']" value="{{useoverride}}">
+                    {{useoverride}}
+                </md-option>
+            </md-select>
+            <div ng-messages="elementPolicyForm.useOverride.$error" md-auto-hide="false">
+                <div ng-message="required">Required field</div>
+            </div>
+        </md-input-container>
+    </div>
+    <div layout="row" flex></div>
+    <div layout="row">
+        <span flex></span>
+        <md-button ng-click="hideForm('displayElementPolicyForm')">
+            Back
+        </md-button>
+        <md-button ng-disabled="elementPolicyForm.$invalid" ng-click="addElementPolicyToList()">
+            Add to List
+        </md-button>
+    </div>
+</form>

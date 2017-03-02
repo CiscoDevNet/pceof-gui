@@ -1,0 +1,44 @@
+<div layout="column" class="layout-padding-lr15">
+	<div layout="row">
+		<md-input-container flex>
+			<label>Unique ID or name</label>
+			<input
+				name="regId"
+				ng-model="editBuffer.id"
+				ng-required="true">
+			<div
+				ng-messages="addEditRegistrationForm.regId.$error"
+				md-auto-hide="false">
+				<div ng-message="required">Required field</div>
+			</div>
+		</md-input-container>
+	</div>
+	<div layout="row">
+		<md-chips
+			name="links"
+			ng-required="true"
+			ng-model="editBuffer.links"
+			md-autocomplete-snap
+			flex>
+			<md-autocomplete
+				md-selected-item="linksChipsConfig.selectedItem"
+				md-search-text="linksChipsConfig.searchText"
+				md-items="link in searchForLinks(linksChipsConfig.searchText)"
+				md-item-text="link.id"
+				placeholder="Enter link IDs"
+				md-autocomplete-wrap-override
+				md-input-name="linksAutocomplete"
+				flex>
+				<md-item-template>
+					<span md-highlight-text="linksChipsConfig.searchText">{{link.id}}</span>
+				</md-item-template>
+				<md-not-found>
+					No matches found.
+				</md-not-found>
+			</md-autocomplete>
+			<md-chip-template>
+				<span>{{$chip.id}}</span>
+			</md-chip-template>
+		</md-chips>
+	</div>
+</div>

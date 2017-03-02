@@ -1,0 +1,107 @@
+<md-sidenav class="md-sidenav-right md-whiteframe-z2" md-component-id="right" md-is-locked-open="sidePanelPage">
+    <md-toolbar>
+        <div class="md-toolbar-tools">
+            <h2>
+                <span>Flow detail</span>
+            </h2>
+            <span flex></span>
+            <md-button ng-click="closeSidePanel()" class="md-button">Close panel</md-button>
+        </div>
+    </md-toolbar>
+
+    <md-content flex class="md-whiteframe-2dp" ng-if="sidePanelObject">
+
+        <md-subheader class="md-primary">Flow properties</md-subheader>
+        <div layout="row" class="layout-padding-5-15">
+            <span flex="35"><strong>Flow name</strong></span><span flex>{{ sidePanelObject['flow-name'] }}</span>
+        </div>
+        <div layout="row" class="layout-padding-5-15">
+            <span flex="35"><strong>Flow Id</strong></span><span flex>{{ sidePanelObject.id }}</span>
+        </div>
+        <div layout="row" class="layout-padding-5-15">
+            <span flex="35"><strong>Table Id</strong></span><span flex>{{ sidePanelObject['table_id'] }}</span>
+        </div>
+        <div layout="row" class="layout-padding-5-15">
+            <span flex="35"><strong>Flow state</strong></span><span flex>{{ sidePanelObject.status }}</span>
+        </div>
+        <div layout="row" class="layout-padding-5-15">
+            <span flex="35"><strong>Priority</strong></span><span flex>{{ sidePanelObject.priority }}</span>
+        </div>
+
+        <md-divider></md-divider>
+        <md-subheader class="md-primary">Matches</md-subheader>
+
+        <div layout="row" class="layout-padding-5-15" ng-if="sidePanelObject.match['ethernet-match']">
+            <span flex="35"><strong>Ethernet type</strong></span><span flex>{{ decToHex(sidePanelObject.match['ethernet-match']['ethernet-type'].type) }}</span>
+        </div>
+        <div layout="row" class="layout-padding-5-15" ng-if="sidePanelObject.match['ipv6-source']">
+            <span flex="35"><strong>IPv6 Source</strong></span><span flex>{{ sidePanelObject.match['ipv6-source'] }}</span>
+        </div>
+        <div layout="row" class="layout-padding-5-15" ng-if="sidePanelObject.match['ipv6-destination']">
+            <span flex="35"><strong>IPv6 Destination</strong></span><span flex>{{ sidePanelObject.match['ipv6-destination'] }}</span>
+        </div>
+        <div layout="row" class="layout-padding-5-15" ng-if="sidePanelObject.match['ipv4-source']">
+            <span flex="35"><strong>IPv4 Source</strong></span><span flex>{{ sidePanelObject.match['ipv4-source'] }}</span>
+        </div>
+        <div layout="row" class="layout-padding-5-15" ng-if="sidePanelObject.match['ipv4-destination']">
+            <span flex="35"><strong>IPv4 Destination</strong></span><span flex>{{ sidePanelObject.match['ipv4-destination'] }}</span>
+        </div>
+        <div layout="row" class="layout-padding-5-15" ng-if="sidePanelObject.match['icmpv6-match']">
+            <span flex="35"><strong>ICMPv6 Type</strong></span><span flex>{{ decToHex(sidePanelObject.match['icmpv6-match']['icmpv6-type']) }}</span>
+        </div>
+        <div layout="row" class="layout-padding-5-15" ng-if="sidePanelObject.match['ip-match']">
+            <span flex="35"><strong>IP Protocol</strong></span><span flex>{{ decToHex(sidePanelObject.match['ip-match']['ip-protocol']) }}</span>
+        </div>
+        <div layout="row" class="layout-padding-5-15" ng-if="sidePanelObject.match['arp-op']">
+            <span flex="35"><strong>ARP Op</strong></span><span flex>{{ sidePanelObject.match['arp-op'] }}</span>
+        </div>
+        <div layout="row" class="layout-padding-5-15" ng-if="sidePanelObject.match['in-port']">
+            <span flex="35"><strong>In Port</strong></span><span flex>{{ sidePanelObject.match['in-port'] }}</span>
+        </div>
+        <div ng-if="sidePanelObject.match['vlan-match']">
+            <div layout="row" class="layout-padding-5-15">
+                <span flex="35"><strong>VLAN Id</strong></span><span flex>{{ sidePanelObject.match['vlan-match']['vlan-id']['vlan-id'] }}</span>
+            </div>
+            <div layout="row" class="layout-padding-5-15">
+                <span flex="35"><strong>VLAN Id Present</strong></span><span flex>{{ sidePanelObject.match['vlan-match']['vlan-id']['vlan-id-present'] }}</span>
+            </div>
+        </div>
+        <!--TODO: fallback - show tree-->
+
+        <md-divider></md-divider>
+        <md-subheader class="md-primary">Actions</md-subheader>
+        <div ng-if="sidePanelObject.instructions['group-action']">
+            <div layout="row" class="layout-padding-5-15" >
+                <span flex="35"><strong>Group Label</strong></span><span flex>{{ sidePanelObject.instructions['group-action'].group }}</span>
+            </div>
+            <div layout="row" class="layout-padding-5-15" >
+                <span flex="35"><strong>Group ID</strong></span><span flex>{{ sidePanelObject.instructions['group-action']['group-id'] }}</span>
+            </div>
+        </div>
+        <div ng-if="sidePanelObject.instructions['output-action']">
+            <div layout="row" class="layout-padding-5-15" >
+                <span flex="35"><strong>Max. Length</strong></span><span flex>{{ sidePanelObject.instructions['output-action']['max-length'] }}</span>
+            </div>
+            <div layout="row" class="layout-padding-5-15" >
+                <span flex="35"><strong>Output Port</strong></span><span flex>{{ sidePanelObject.instructions['output-action']['output-node-connector'] }}</span>
+            </div>
+        </div>
+        <div ng-if="sidePanelObject.instructions['set-field']['ethernet-match']">
+            <div layout="row" class="layout-padding-5-15" >
+                <span flex="35"><strong>Destination MAC</strong></span><span flex>{{ sidePanelObject.instructions['set-field']['ethernet-match']['ethernet-destination']['address'] }}</span>
+            </div>
+        </div>
+        <div ng-if="sidePanelObject.instructions['set-field']['vlan-match']">
+            <div layout="row" class="layout-padding-5-15" >
+                <span flex="35"><strong>VLAN Id</strong></span><span flex>{{ sidePanelObject.instructions['set-field']['vlan-match']['vlan-id']['vlan-id'] }}</span>
+            </div>
+            <div layout="row" class="layout-padding-5-15" >
+                <span flex="35"><strong>VLAN Id Present</strong></span><span flex>{{ sidePanelObject.instructions['set-field']['vlan-match']['vlan-id']['vlan-id-present'] }}</span>
+            </div>
+        </div>
+        
+        <!--TODO: fallback - show tree-->
+
+    </md-content>
+
+</md-sidenav>

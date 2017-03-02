@@ -1,0 +1,57 @@
+<md-content class="md-padding">
+	<md-button md-no-ink class="md-primary reload-button" ng-click="reloadRegisteredEvents()"><i class="material-icons">sync</i> Reload events</md-button>
+	<md-button md-no-ink class="md-warn clear-button" ng-click="clearRegisteredEvents()"><i class="material-icons">clear</i> Clear events</md-button>
+	<md-table-container ng-show="registeredEvents.length">
+		<table md-table>
+			<thead md-head md-order="eventsTableQuery.order">
+			<tr md-row>
+				<th md-column md-order-by="['notification-id']"><span>Event ID</span></th>
+				<th md-column md-order-by="['registration-id']"><span>Registration ID</span></th>
+				<th md-column md-order-by="time"><span>Time</span></th>
+				<th md-column><span>Link ID</span></th>
+				<th md-column><span>%</span></th>
+				<th md-column><span>bits/s</span></th>
+			</tr>
+			</thead>
+			<tbody md-body>
+			<tr md-row ng-repeat="event in registeredEvents | filter: eventsTableQuery.filter | orderBy: eventsTableQuery.order | limitTo: eventsTableQuery.limit : (eventsTableQuery.page -1) * eventsTableQuery.limit">
+				<td md-cell>
+					{{ event['notification-id'] }}
+				</td>
+				<td md-cell>
+					{{ event['registration-id'] }}
+				</td>
+				<td md-cell>
+					{{ event['time'] | date: 'short' }}
+				</td>
+				<td md-cell colspan="3">
+
+					<table style="width: 100%;">
+						<tr ng-repeat="bandwidthData in event['bandwidth-data']">
+							<td>
+								{{ bandwidthData['link-id'] }}
+							</td>
+							<td>
+								{{ bandwidthData['percent-value'] }}
+							</td>
+							<td>
+								{{ bandwidthData['bits-per-sec-value'] }}
+							</td>
+						</tr>
+					</table>
+
+				</td>
+			</tr>
+			</tbody>
+		</table>
+		<md-table-pagination md-limit="eventsTableQuery.limit"
+							 md-page="eventsTableQuery.page"
+							 md-options="eventsTableQuery.options"
+							 md-total="{{registeredEvents.length}}"
+							 md-page-select="eventsTableQuery.pageSelect">
+		</md-table-pagination>
+	</md-table-container>
+	<div ng-hide="registeredEvents.length" class="padding-l25">
+		You do not have any registered events now.
+	</div>
+</md-content>

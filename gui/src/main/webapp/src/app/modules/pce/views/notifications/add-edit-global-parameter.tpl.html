@@ -1,0 +1,45 @@
+<md-dialog ng-cloak>
+	<form name="addEditGlobalParameterForm">
+		<md-toolbar>
+			<div class="md-toolbar-tools">
+				<h2 ng-show="editConfig.globalParameter.add">Add Global Parameter</h2>
+				<h2 ng-show="editConfig.globalParameter.edit">Edit Global Parameter</h2>
+				<span flex></span>
+				<md-button ng-click="closeGlobalParameterDialog()" class="md-icon-button">
+					<md-icon aria-label="Close dialog">clear</md-icon>
+					<md-tooltip>Close dialog window</md-tooltip>
+				</md-button>
+			</div>
+		</md-toolbar>
+		<md-dialog-content>
+			<div layout="column" class="layout-padding-lr15">
+				<md-subheader class="md-primary">Global parameter</md-subheader>
+				<div layout="row">
+					<md-input-container flex="50">
+						<label>Name</label>
+						<input name="gpName" ng-model="editConfig.globalParameter.values.name" ng-required="true">
+						<div ng-messages="addEditGlobalParameterForm.gpName.$error" md-auto-hide="false">
+							<div ng-message="required">Required field</div>
+						</div>
+					</md-input-container>
+					<md-input-container flex>
+						<label>Value</label>
+						<input name="gpValue" ng-model="editConfig.globalParameter.values.value" ng-required="true">
+						<div ng-messages="addEditGlobalParameterForm.gpValue.$error" md-auto-hide="false">
+							<div ng-message="required">Required field</div>
+						</div>
+					</md-input-container>
+				</div>
+			</div>
+		</md-dialog-content>
+		<md-dialog-actions layout="row">
+			<span flex></span>
+			<md-button ng-click="closeGlobalParameterDialog()">
+				Close
+			</md-button>
+			<md-button ng-click="saveGlobalParameter()" style="margin-right:20px;" ng-disabled="addEditGlobalParameterForm.$invalid">
+				Save
+			</md-button>
+		</md-dialog-actions>
+	</form>
+</md-dialog>

@@ -1,0 +1,26 @@
+<div ng-controller="NotificationsCtrl" layout="row" class="h100 pce-wrapper" id="notifications-container" flex>
+	<section flex layout='column' class="h100">
+		<md-content flex class="md-whiteframe-2dp">
+
+
+			<div ng-show="statsLoaded">
+				<md-tabs md-dynamic-height md-border-bottom>
+					<!-- Registrations -->
+					<md-tab label="Registrations">
+						<div ng-include="'./app/modules/pce/views/notifications/tab-registrations.tpl.html'"></div>
+					</md-tab>
+					<!-- Registered events TAB -->
+					<md-tab label="Events">
+						<div ng-include="'./app/modules/pce/views/notifications/tab-registered-events.tpl.html'"></div>
+					</md-tab>
+				</md-tabs>
+			</div>
+			<div ng-show="!statsLoaded">
+				<md-content class="md-padding">
+					<h2 class="md-title">Loading ... </h2>
+				</md-content>
+			</div>
+
+		</md-content>
+	</section>
+</div>

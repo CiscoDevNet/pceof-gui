@@ -1,0 +1,125 @@
+<div ng-controller="FlowManagementCtrl" layout="row" class="h100 pce-wrapper" id="flow-management-container" flex>
+    <section flex layout='column' class="h100">
+
+        <md-content flex class="md-whiteframe-2dp">
+            <md-toolbar class="md-table-toolbar md-default" ng-hide="filter.show">
+                <div class="md-toolbar-tools">
+                    <h2 class="md-title">Devices</h2>
+                    <div class="flex" flex=""></div>
+                    <button class="md-icon-button md-button md-ink-ripple" type="button" ng-click="filter.show = true">
+                        <md-icon class="material-icons">filter_list</md-icon>
+                        <div class="md-ripple-container"></div>
+                    </button>
+                </div>
+            </md-toolbar>
+
+            <md-toolbar class="md-table-toolbar md-default ng-hide" ng-show="filter.show" aria-hidden="true" style="">
+                <div class="md-toolbar-tools">
+                    <md-icon class="material-icons">search</md-icon>
+                    <form class="ng-pristine ng-valid flex" name="filter.form" flex="">
+                        <input class="ng-pristine ng-valid ng-touched" type="text" placeholder="search" ng-model-options="filter.options" ng-model="query.filter" aria-invalid="false" style="">
+                    </form>
+                    <button class="md-icon-button md-button md-ink-ripple" type="button" ng-click="removeFilter()">
+                        <md-icon class="material-icons">close</md-icon>
+                        <div class="md-ripple-container"></div>
+                    </button>
+                </div>
+            </md-toolbar>
+
+            <md-toolbar class="md-table-toolbar alternate" ng-show="options.rowSelection && selected.length">
+              <div class="md-toolbar-tools">
+                <span>{{selected.length}} {{selected.length > 1 ? 'items' : 'item'}} selected</span>
+              </div>
+            </md-toolbar>
+
+            <md-table-container>
+                <table md-table>
+                    <thead md-head md-order="query.order">
+                      <tr md-row>
+                          <th md-column md-order-by="id"><span>Device</span></th>
+                          <th md-column md-order-by="status"><span>Status</span></th>
+                          <th md-column md-order-by="datapathType"><span>Datapath Type</span></th>
+                          <th md-column><span>Flows only in config</span></th>
+                          <th md-column><span>Flows only in operational</span></th>
+                          <th md-column><span>Flows in config+operational</span></th>
+                      </tr>
+                    </thead>
+                    <!--, datapathType: query.filter, configFlowsCount: query.filter, operationalFlowsCount: query.filter, confAndOperFlowsCount: query.filter-->
+                    <tbody md-body >
+                        <tr md-row ng-repeat-start="device in devices | filter: query.filter | orderBy: query.order | limitTo: query.limit : (query.page -1) * query.limit" ng-init="showFlows = false">
+                            <td md-cell>
+                                <button class="md-icon-button md-button md-ink-ripple" type="button" ng-click="showFlows = !showFlows">
+                                    <md-icon class="material-icons rotate {{ showFlows ? 'down' : '' }}">keyboard_arrow_right</md-icon>
+                                    <div class="md-ripple-container"></div>
+                                </button>
+                                {{ device.id }}
+                            </td>
+                            <td md-cell>{{ device.status }}</td>
+                            <td md-cell>{{ device.datapathType }}</td>
+                            <td md-cell>{{ device.configFlowsCount }}</td>
+                            <td md-cell>{{ device.operationalFlowsCount }}</td>
+                            <td md-cell>{{ device.confAndOperFlowsCount }}</td>
+                        </tr>
+
+                        <tr md-row ng-repeat-end ng-show="showFlows">
+                            <td md-cell colspan="6">
+                                <div layout-padding class="mt20 mb20">
+                                    <md-content ng-controller="FlowsTableCtrl" flex class="md-whiteframe-2dp">
+                                         <md-toolbar class="md-table-toolbar md-default" ng-hide="filter.show" aria-hidden="false" style="">
+                                            <div class="md-toolbar-tools">
+                                                <h2 class="md-title">Flows of device {{ device.id }}</h2>
+                                                <div class="flex" flex=""></div>
+                                                <button class="md-icon-button md-button md-ink-ripple" type="button" ng-click="filter.show = true">
+                                                    <md-icon class="material-icons">filter_list</md-icon>
+                                                    <div class="md-ripple-container"></div>
+                                                </button>
+                                            </div>
+                                        </md-toolbar>
+
+                                        <md-toolbar class="md-table-toolbar md-default ng-hide" ng-show="filter.show && !selected.length" aria-hidden="true" style="">
+                                            <div class="md-toolbar-tools">
+                                                <md-icon class="material-icons">search</md-icon>
+                                                <form class="ng-pristine ng-valid flex" name="filter.form" flex="">
+                                                    <input class="ng-pristine ng-valid ng-touched" type="text" placeholder="search" ng-model-options="filter.options" ng-model="query.filter" aria-invalid="false" style="">
+                                                </form>
+                                                <button class="md-icon-button md-button md-ink-ripple" type="button" ng-click="removeFilter()">
+                                                    <md-icon class="material-icons">close</md-icon>
+                                                    <div class="md-ripple-container"></div>
+                                                </button>
+                                            </div>
+                                        </md-toolbar>
+
+                                        <md-table-container>
+                                            <table md-table>
+                                                <thead md-head md-order="flowOrder">
+                                                  <tr md-row>
+                                                    <th md-column md-order-by="['flow-name']"><span>Flow name</span></th>
+                                                    <th md-column md-order-by="id"><span>Priority</span></th>
+                                                    <th md-column md-order-by="table_id"><span>Table Id</span></th>
+                                                    <th md-column md-order-by="status"><span>Flow state</span></th>
+                                                  </tr>
+                                                </thead>
+                                                <tbody md-body ng-repeat="rowFlow in flows[device.datapathId] | filter: query.filter | orderBy: flowOrder | limitTo: query.limit : (query.page -1) * query.limit">
+                                                    <tr md-row ng-click="openSidePanel('side_panel_flow_detail', rowFlow);" class="pointer">
+                                                        <td md-cell><span tite="{{ rowFlow['flow-name'] }}">{{ rowFlow['flow-name'].substr(0, 60) }}...</span></td>
+                                                        <td md-cell>{{ rowFlow.priority }}</td>
+                                                        <td md-cell>{{ rowFlow['table_id'] }}</td>
+                                                        <td md-cell>{{ rowFlow['status'] }}</td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </md-table-container>
+
+                                        <md-table-pagination md-limit="query.limit" md-page="query.page" md-total="{{ flows[device.datapathId].length }}" md-options="[25,50,100]" md-page-select="options.pageSelector" md-boundary-links="options.boundaryLinks"></md-table-pagination>
+                                    </md-content>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </md-table-container>
+
+            <md-table-pagination md-limit="query.limit" md-page="query.page" md-total="{{ devices.length }}" md-options="[25,50,100]" md-page-select="options.pageSelector" md-boundary-links="options.boundaryLinks"></md-table-pagination>
+        </md-content>
+    </section>
+</div>

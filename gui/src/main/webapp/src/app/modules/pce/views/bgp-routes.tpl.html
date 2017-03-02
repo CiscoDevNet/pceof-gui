@@ -1,0 +1,78 @@
+<div ng-controller="BGPRoutesCtrl" layout="row" class="h100 pce-wrapper" id="flow-management-container" flex>
+    <section flex layout='column' class="h100">
+
+        <md-content flex class="md-whiteframe-2dp">
+            <md-toolbar class="md-table-toolbar md-default" ng-hide="bgpTableFilter.show">
+                <div class="md-toolbar-tools">
+                    <h2 class="md-title">BGP routes</h2>
+                    <div class="flex" flex=""></div>
+                    <md-button class="md-icon-button" type="button" ng-click="bgpTableFilter.show = true">
+                        <md-icon class="material-icons">filter_list</md-icon>
+                    </md-button>
+                    <md-button class="md-icon-button" ng-click="loadBgpRoutesList()">
+                        <md-icon>refresh</md-icon>
+                    </md-button>
+                    <md-button class="md-icon-button" ng-click="addRoute($event)">
+                        <i class="material-icons">add</i>
+                    </md-button>
+                </div>
+            </md-toolbar>
+
+            <md-toolbar class="md-table-toolbar md-default ng-hide" ng-show="bgpTableFilter.show" aria-hidden="true" style="">
+                <div class="md-toolbar-tools">
+                    <md-icon class="material-icons">search</md-icon>
+                    <form class="ng-pristine ng-valid flex" name="bgpTableFilter.form" flex="">
+                        <input class="ng-pristine ng-valid ng-touched" type="text" placeholder="search" ng-model-options="bgpTableFilter.options" ng-model="bgpTableQuery.filter" aria-invalid="false" style="">
+                    </form>
+                    <md-button class="md-icon-button md-ink-ripple" type="button" ng-click="removeBGPTableFilter()">
+                        <md-icon class="material-icons">close</md-icon>
+                        <div class="md-ripple-container"></div>
+                    </md-button>
+                </div>
+            </md-toolbar>
+
+            <md-table-container ng-if="bgpRoutesList.data.length">
+                <table md-table class="bgpRoutesList">
+                    <thead md-head md-order="bgpTableQuery.order">
+                      <tr md-row>
+                          <th md-column md-order-by="data['ip-prefix']"><span>IP Prefix</span></th>
+                          <th md-column md-order-by="data['next-hop'].join()"><span>Next Hop</span></th>
+                          <th md-column md-order-by="data['vrf-name']"><span>VRF Name</span></th>
+                          <th md-column><span>Actions</span></th>
+                      </tr>
+                    </thead>
+                    <tbody md-body>
+                        <tr md-row ng-repeat="bgpRoute in bgpRoutesList.data | filter: bgpTableQuery.filter  | orderBy : bgpTableQuery.order | limitTo: bgpTableQuery.limit : (bgpTableQuery.page -1) * bgpTableQuery.limit">
+                            <td md-cell>{{bgpRoute.data['ip-prefix']}}</td>
+                            <td md-cell>
+                                <span ng-repeat="hop in bgpRoute.data['next-hop']">
+                                    {{hop}}
+                                    <span ng-hide="$last">,</span>
+                                </span>
+                            </td>
+                            <td md-cell>{{bgpRoute.data['vrf-name']}}</td>
+                            <td md-cell>
+                                <md-button class="md-icon-button" ng-click="editRoute(bgpRoute, $event)">
+                                    <md-icon>edit</md-icon>
+                                </md-button>
+                                <md-button class="md-icon-button" ng-click="deleteRoute(bgpRoute)">
+                                    <md-icon>delete</md-icon>
+                                </md-button>
+                            </td>
+                        </tr>
+
+                    </tbody>
+                </table>
+                <md-table-pagination md-limit="bgpTableQuery.limit"
+                                     md-page="bgpTableQuery.page"
+									 md-options="bgpTableQuery.options"
+                                     md-total="{{bgpRoutesList.data.length}}"
+                                     md-page-select="options.pageSelect">
+                </md-table-pagination>
+            </md-table-container>
+            <span class="padding-l25" ng-if="bgpRoutesList.data.length === 0">
+                List of BGP Routes is empty.
+            </span>
+        </md-content>
+    </section>
+</div>

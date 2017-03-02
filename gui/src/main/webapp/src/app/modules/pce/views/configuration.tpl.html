@@ -1,0 +1,149 @@
+<div ng-controller="ConfigurationCtrl" layout="row" flex layout-wrap id="configuration-container">
+
+    <!-- Neighbour Discovery Configuration Parameters -->
+    <div layout="row" layout-padding flex="50" ng-switch="section.nd">
+        <md-content flex class="md-whiteframe-2dp md-padding" layout="column" ng-hide="showProgressLine">
+            <!-- TITLE -->
+            <md-toolbar class="md-table-toolbar md-default" aria-hidden="false">
+                <div class="md-toolbar-tools"  layout-align="space-between center">
+                    <h2 class="md-title">Neighbour Discovery Configuration Parameters</h2>
+                    <md-button class="md-primary" ng-click="openEditDialog('nd')">Edit configuration</md-button>
+                </div>
+            </md-toolbar>
+
+            <!-- CONTENT -->
+            <section ng-switch-when="data" layout="row" flex layout-align="start" class="inner-box">
+                <md-table-container flex>
+                    <table md-table>
+                        <thead md-head>
+                        <tr md-row>
+                            <th md-column><span>Name</span></th>
+                            <th md-column><span>Value</span></th>
+                        </tr>
+                        </thead>
+                        <tbody md-body>
+                        <tr md-row ng-repeat="(prop, val) in config.nd"><!--| filter: query.filter | limitTo: query.limit : (query.page -1) * query.limit-->
+                            <td md-cell>{{prop}}</td>
+                            <td md-cell>{{val}}</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </md-table-container>
+            </section>
+            <section ng-switch-when="no-data" layout="row" flex layout-align="center center" class="inner-box">No data</section>
+            <section ng-switch-when="loading" layout="row" flex layout-align="center center" class="inner-box">Loading data ...</section>
+
+        </md-content>
+    </div>
+
+    <!--Registrations global parameters-->
+    <div layout="row" layout-padding flex="50" ng-switch="section.rp">
+        <md-content flex class="md-whiteframe-2dp md-padding" layout="column" ng-hide="showProgressLine">
+            <!-- TITLE -->
+            <md-toolbar class="md-table-toolbar md-default" aria-hidden="false">
+                <div class="md-toolbar-tools"  layout-align="space-between center">
+                    <h2 class="md-title">Registrations Global Parameters</h2>
+                    <md-button class="md-primary" ng-click="openEditDialog('rp')">Edit configuration</md-button>
+                </div>
+            </md-toolbar>
+
+            <!-- CONTENT -->
+            <section ng-switch-when="data" layout="row" flex layout-align="start" class="inner-box">
+                <md-table-container flex>
+                    <table md-table>
+                        <thead md-head>
+                        <tr md-row>
+                            <th md-column><span>Name</span></th>
+                            <th md-column><span>Value</span></th>
+                        </tr>
+                        </thead>
+                        <tbody md-body>
+                        <tr md-row ng-repeat="(prop, val) in config.rp">
+                            <td md-cell>{{prop}}</td>
+                            <td md-cell>{{val}}</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </md-table-container>
+            </section>
+            <section ng-switch-when="no-data" layout="row" flex layout-align="center center" class="inner-box">No data</section>
+            <section ng-switch-when="loading" layout="row" flex layout-align="center center" class="inner-box">Loading data ...</section>
+
+        </md-content>
+    </div>
+
+    <!-- Flow statistics configuration -->
+    <!--<div layout="row" layout-padding flex="50" ng-switch="section.fs">
+        <md-content flex class="md-whiteframe-2dp" layout="column" ng-hide="showProgressLine">
+            &lt;!&ndash; TITLE &ndash;&gt;
+            <md-toolbar class="md-table-toolbar md-default" aria-hidden="false">
+                <div class="md-toolbar-tools" layout-align="space-between center">
+                    <h2 class="md-title">Flow Statistic</h2>
+                    <md-button class="md-primary" ng-click="openEditDialog('fs')">Edit configuration</md-button>
+                </div>
+            </md-toolbar>
+
+            &lt;!&ndash; CONTENT &ndash;&gt;
+            <section ng-switch-when="data" layout="row" flex layout-align="start" class="inner-box">
+                <md-table-container flex>
+                    <table md-table>
+                        <thead md-head>
+                        <tr md-row>
+                            <th md-column><span>Name</span></th>
+                            <th md-column><span>Value</span></th>
+                        </tr>
+                        </thead>
+                        <tbody md-body>
+                        <tr md-row ng-repeat="(prop, val) in config.fs">&lt;!&ndash;| filter: query.filter | limitTo: query.limit : (query.page -1) * query.limit&ndash;&gt;
+                            <td md-cell>{{prop}}</td>
+                            <td md-cell>{{getCorrectValueView(val)}}</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </md-table-container>
+            </section>
+            <section ng-switch-when="no-data" layout="row" flex layout-align="center center" class="inner-box">No data</section>
+            <section ng-switch-when="loading" layout="row" flex layout-align="center center" class="inner-box">Loading data ...</section>
+
+        </md-content>
+    </div>-->
+
+    <!-- Kafka Configuration on Controller -->
+    <!--<div layout="row" flex="50" layout-padding ng-switch="section.kafka">
+        <md-content flex class="md-whiteframe-2dp" layout="column" ng-hide="showProgressLine">
+            &lt;!&ndash; TITLE &ndash;&gt;
+            <md-toolbar class="md-table-toolbar md-default" aria-hidden="false">
+                <div class="md-toolbar-tools">
+                    <h2 class="md-title">Kafka Configuration on Controller</h2>
+                </div>
+            </md-toolbar>
+
+            &lt;!&ndash; CONTENT &ndash;&gt;
+            <section ng-switch-when="data" layout="row" flex layout-align="center center" class="inner-box">Data</section>
+            <section ng-switch-when="no-data" layout="row" flex layout-align="center center" class="inner-box">No data</section>
+            <section ng-switch-when="loading" layout="row" flex layout-align="center center" class="inner-box">Loading data ...</section>
+
+        </md-content>
+    </div>-->
+
+    <!-- XRV Configuration Parameters -->
+    <!--<div layout="row" flex="50" layout-padding ng-switch="section.xrv">
+        <md-content flex class="md-whiteframe-2dp" layout="column" ng-hide="showProgressLine">
+            &lt;!&ndash; TITLE &ndash;&gt;
+            <md-toolbar class="md-table-toolbar md-default" aria-hidden="false">
+                <div class="md-toolbar-tools">
+                    <h2 class="md-title">XRV Configuration Parameters</h2>
+                </div>
+            </md-toolbar>
+
+            &lt;!&ndash; CONTENT &ndash;&gt;
+            <section ng-switch-when="data" layout="row" flex layout-align="center center" class="inner-box">Data</section>
+            <section ng-switch-when="no-data" layout="row" flex layout-align="center center" class="inner-box">No data</section>
+            <section ng-switch-when="loading" layout="row" flex layout-align="center center" class="inner-box">Loading data ...</section>
+
+        </md-content>
+    </div>-->
+
+
+
+</div>

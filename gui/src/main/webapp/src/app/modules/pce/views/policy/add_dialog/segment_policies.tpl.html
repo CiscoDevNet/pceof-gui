@@ -1,0 +1,152 @@
+<div ng-if="!displaySegmentPolicyForm" flex layout="column">
+    <div layout="row" >
+        <div class="flex-90 md-subheader md-primary">Segment policies ({{ getAllSegmentPolicies().length || 0 }})</div>
+        <md-button class="md-icon-button" ng-click="showForm('displaySegmentPolicyForm', 'segmentPolicy')" flex>
+            <i class="material-icons">add</i>
+        </md-button>
+    </div>
+    <md-list>
+        <md-list-item class="md-2-line" layout="row" ng-repeat="sp in getAllSegmentPolicies() track by $index"
+                      ng-click="fillSegmentPolicyForm(sp, $index)">
+            <div class="md-list-item-text" flex>
+                <h3>{{sp.data['segment-name']}} </h3>
+                <p>Type: {{ sp.data['segment-type']}} </p>
+            </div>
+            <div>
+                <md-button class="md-icon-button" aria-label="Delete Segment Policy"
+                         ng-click="deleteSegmentPolicyFromList(sp)">
+                    <i class="material-icons">clear</i>
+                </md-button>
+            </div>
+        </md-list-item>
+    </md-list>
+    <div layout="row" flex></div>
+    <div layout="row" >
+        <span flex></span>
+        <md-button ng-click="stepBack()">
+            Back
+        </md-button>
+        <md-button ng-disabled="!policy.data['path-bundle'].data.length" ng-click="stepForward()">
+            Next
+        </md-button>
+    </div>
+</div>
+
+<form name="segmentForm" id="segmentForm"></form>
+<form name="segmentPolicyForm" ng-if="displaySegmentPolicyForm" flex layout="column">
+    <div layout="row">
+        <div class="md-subheader md-primary">Segment policy</div>
+    </div>
+    <div layout="row">
+        <md-input-container flex="50">
+            <label>Path Bundle</label>
+            <md-select name="pathBundleId" ng-model="segmentPolicy.pathBundleId"
+                       aria-label="Segment Policy, property Path Bundle Id"
+                       ng-required="true">
+                <md-option ng-repeat="pb in policy.data['path-bundle'].data" value="{{pb.data['bundle-id']}}">
+                    {{pb.data['bundle-id']}}
+                </md-option>
+            </md-select>
+            <div ng-messages="segmentPolicyForm.pathBundleId.$error" md-auto-hide="false">
+                <div ng-message="required">Required field</div>
+            </div>
+        </md-input-container>
+        <md-input-container flex>
+            <label>Segment name</label>
+            <input name="segmentName" ng-model="segmentPolicy.data['segment-name']"
+                   ng-required="true">
+            <div ng-messages="segmentPolicyForm.segmentName.$error" md-auto-hide="false">
+                <div ng-message="required">Required field</div>
+            </div>
+        </md-input-container>
+    </div>
+    <div layout="row">
+        <md-input-container flex="50">
+            <label>Segment Type</label>
+            <md-select name="segmentType" ng-model="segmentPolicy.data['segment-type']"
+                       aria-label="Segment policy, property segment type"
+                       ng-required="true">
+                <md-option ng-repeat="st in ['strict', 'loose']" value="{{st}}">
+                    {{st}}
+                </md-option>
+            </md-select>
+            <div ng-messages="segmentPolicyForm.segmentType.$error" md-auto-hide="false">
+                <div ng-message="required">Required field</div>
+            </div>
+        </md-input-container>
+        <md-input-container flex>
+            <label>Use Override</label>
+            <md-select name="useOverride" ng-model="segmentPolicy.data['use-override']"
+                       aria-label="Path bundle, property use-override"
+                       ng-required="true">
+                <md-option ng-repeat="useoverride in ['must-use', 'must-not-use', 'may-use']" value="{{useoverride}}">
+                    {{useoverride}}
+                </md-option>
+            </md-select>
+            <div ng-messages="segmentPolicyForm.useOverride.$error" md-auto-hide="false">
+                <div ng-message="required">Required field</div>
+            </div>
+        </md-input-container>
+    </div>
+
+    <div layout="row">
+        <div class="flex-90 md-subheader md-primary" >
+            Segments ({{ segmentPolicy.data.segment.data.length || 0 }})
+        </div>
+        <div class="flex md-subheader md-primary">
+            <md-button class="md-icon-button" ng-click="addSegmentToList()">
+                <i class="material-icons">add</i>
+            </md-button>
+        </div>
+    </div>
+
+    <section style="height: 310px; overflow-y: auto;">
+        <div layout="row" ng-repeat="segmentObj in segmentPolicy.data.segment.data track by $index">
+            <md-input-container flex="10">
+                <label>Order</label>
+                <input name="segmentOrder" ng-model="segmentObj.data.order"
+                       ng-required="true" form="segmentForm">
+                <div ng-messages="segmentForm.segmentOrder.$error" md-auto-hide="false">
+                    <div ng-message="required">Required field</div>
+                </div>
+            </md-input-container>
+            <md-input-container flex="50">
+                <label>Element Id</label>
+                <input name="segmentId" ng-model="segmentObj.data.id"
+                       ng-required="true" form="segmentForm">
+                <div ng-messages="segmentForm.segmentId.$error" md-auto-hide="false">
+                    <div ng-message="required">Required field</div>
+                </div>
+            </md-input-container>
+            <md-input-container flex="20">
+                <label>Segment Type</label>
+                <md-select name="segmentElementType" ng-model="segmentObj.data['element-type']"
+                           aria-label="Segment, property element type"
+                           ng-required="true" form="segmentForm">
+                    <md-option ng-repeat="st in ['node', 'link', 'link-group']" value="{{st}}">
+                        {{st}}
+                    </md-option>
+                </md-select>
+                <div ng-messages="segmentForm.segmentElementType.$error" md-auto-hide="false">
+                    <div ng-message="required">Required field</div>
+                </div>
+            </md-input-container>
+            <div flex>
+                <md-button class="md-icon-button" ng-click="deleteSegmentFromList($index)">
+                    <i class="material-icons">clear</i>
+                </md-button>
+            </div>
+        </div>
+    </section>
+
+    <div layout="row" flex></div>
+    <div layout="row">
+        <span flex></span>
+        <md-button ng-click="hideForm('displaySegmentPolicyForm')">
+            Back
+        </md-button>
+        <md-button ng-disabled="segmentPolicyForm.$invalid" ng-click="addSegmentPolicyToList()">
+            Add to List
+        </md-button>
+    </div>
+</form>

@@ -1,0 +1,124 @@
+<section layout="column" class="h100" ng-controller="LinksCtrl">
+    <md-sidenav class="md-sidenav-right md-whiteframe-z2 h100" md-component-id="right" md-is-locked-open="sidePanelPage">
+        <md-toolbar>
+            <div class="md-toolbar-tools">
+                <h2>
+                    <span>Connections</span>
+                </h2>
+                <span flex></span>
+                <md-button ng-click="closeSidePanel()" class="md-button">Close panel</md-button>
+            </div>
+        </md-toolbar>
+        <md-content flex>
+
+            <div layout-fill layout="row" >
+                <md-list layout-fill ng-show="selectedConnection === null">
+                    <md-list-item class="md-2-line" ng-repeat="connection in connections | orderBy : 'caption'" layout="row"
+                                  ng-click="selectConnection(connection)"
+                                  ng-mouseenter="highlightConnection(connection)"
+                                  ng-mouseleave="fadeInAllLayers()">
+                        <i class="fa fa-circle status-circle " style="color: {{connection.color}}"  flex="5"></i>
+                        <div class="md-list-item-text" flex>
+                            <h3>{{connection.caption}}</h3>
+                            <p>Configured: {{connection.status.configured}} / Operational: {{connection.status.operational}}</p>
+                        </div>
+                    </md-list-item>
+                </md-list>
+                <md-content layout-fill ng-show="selectedConnection !== null && selectedConnectionLink ===null">
+                    <div layout="row" class="layout-padding-lr15">
+                        <ul class="breadcrumbs">
+                            <li class="breadcrumb" ng-click="deselectConnection()">Connections</li>
+                            <li class="breadcrumb"><i class="material-icons">keyboard_arrow_right</i></li>
+                            <li class="breadcrumb">{{selectedConnection.caption}}</li>
+                        </ul>
+                    </div>
+                    <md-divider></md-divider>
+                    <md-divider></md-divider>
+                    <md-subheader class="md-primary">Connection details</md-subheader>
+                    <div layout="row" class="layout-padding-lr15">
+                        <span flex="50"><strong>ECMP</strong></span><span flex>{{selectedConnection.ecmp ? 'yes' : 'no'}}</span>
+                    </div>
+                    <div layout="row" class="layout-padding-lr15">
+                        <span flex="50"><strong>Configured</strong></span><span flex>{{selectedConnection.status.configured}}</span>
+                    </div>
+                    <div layout="row" class="layout-padding-lr15">
+                        <span flex="50"><strong>Operational</strong></span><span flex>{{selectedConnection.status.operational}}</span>
+                    </div>
+
+                    <md-divider style="margin-top: 10px;" ng-hide="selectedConnection === null"></md-divider>
+                    <md-subheader class="md-primary" ng-hide="selectedConnection === null">Links ({{selectedConnection.connectionLinks.length}})</md-subheader>
+
+                    <md-list layout-fill>
+                        <md-list-item class="md-2-line" ng-repeat="connectionLink in selectedConnection.connectionLinks | orderBy : ['port1', 'port2']"
+                                      layout="row" ng-click="selectConnectionLink(connectionLink)">
+                            <i class="fa fa-circle status-circle {{connectionLink.status}}"  flex="5"></i>
+                            <div class="md-list-item-text" flex>
+                                <h3>{{connectionLink.port1}} - {{connectionLink.port2}}</h3>
+                            </div>
+                        </md-list-item>
+                    </md-list>
+
+                </md-content>
+
+                <md-content layout-fill ng-show="selectedConnectionLink !== null">
+                    <div layout="row" class="layout-padding-lr15">
+                        <ul class="breadcrumbs">
+                            <li class="breadcrumb" ng-click="deselectConnectionLink(); deselectConnection()">Connections</li>
+                            <li class="breadcrumb"><i class="material-icons">keyboard_arrow_right</i></li>
+                            <li class="breadcrumb" ng-click="deselectConnectionLink()">{{selectedConnection.caption}}</li>
+                            <li class="breadcrumb"><i class="material-icons">keyboard_arrow_right</i></li>
+                            <li class="breadcrumb">{{selectedConnectionLink.port1}} - {{selectedConnectionLink.port2}}</li>
+                        </ul>
+                    </div>
+                    <md-divider></md-divider>
+                    <md-subheader class="md-primary">Link details</md-subheader>
+                    <div layout="row" class="layout-padding-lr15">
+                        <span flex="50"><strong>Status</strong></span><span flex>{{selectedConnectionLink.status}}</span>
+                    </div>
+                    <div layout="row" class="layout-padding-lr15">
+                        <span flex="50"><strong>Port 1</strong></span><span flex>{{selectedConnectionLink.port1}}</span>
+                    </div>
+                    <div layout="row" class="layout-padding-lr15">
+                        <span flex="50"><strong>Port 2</strong></span><span flex>{{selectedConnectionLink.port2}}</span>
+                    </div>
+
+                    <md-content layout-fill ng-repeat="link in selectedConnectionLink.links track by $index">
+                        <md-divider style="margin-top: 10px;"></md-divider>
+                        <md-subheader class="md-primary">Link {{$index+1}}</md-subheader>
+                        <div layout="row" class="layout-padding-lr15">
+                            <span flex="50"><strong>ID</strong></span><span flex>{{link['link-id']}}</span>
+                        </div>
+                        <div layout="row" class="layout-padding-lr15">
+                            <span flex="50"><strong>Status</strong></span><span flex>{{link['ofl3-topology:status']}}</span>
+                        </div>
+                        <div layout="row" class="layout-padding-lr15">
+                            <span flex="50"><strong>Source port</strong></span><span flex>{{link.source['source-tp']}}</span>
+                        </div>
+                        <div layout="row" class="layout-padding-lr15">
+                            <span flex="50"><strong>Destination port</strong></span><span flex>{{link.destination['dest-tp']}}</span>
+                        </div>
+                        <div layout="row" class="layout-padding-lr15" ng-show="link['ofl3-topology:link-group-id'][0]==='Ungrouped'">
+                            <span flex="50"><strong>Groups</strong></span><span flex>Ungrouped</span>
+                        </div>
+
+                        <md-subheader class="md-primary" ng-hide="link['ofl3-topology:link-group-id'][0]==='Ungrouped'">Groups</md-subheader>
+                        <md-list layout-fill ng-hide="link['ofl3-topology:link-group-id'][0]==='Ungrouped'">
+                            <md-list-item class="md-2-line" ng-repeat="group in link['ofl3-topology:link-group-id']"
+                                          layout="row" ng-click="a=1;">
+                                <div class="md-list-item-text" flex>
+                                    <h3>{{group}}</h3>
+                                </div>
+                            </md-list-item>
+                        </md-list>
+
+                    </md-content>
+
+
+
+                </md-content>
+
+            </div>
+        </md-content>
+
+    </md-sidenav>
+</section>

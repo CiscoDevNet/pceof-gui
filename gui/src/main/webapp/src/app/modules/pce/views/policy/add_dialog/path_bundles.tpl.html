@@ -1,0 +1,117 @@
+<div ng-if="!displayPathBundleForm" flex layout="column">
+    <div layout="row">
+        <div class="flex-90 md-subheader md-primary">Path Bundle list ({{ policy.data['path-bundle'].data.length || 0 }})</div>
+        <md-button class="md-icon-button" ng-click="showForm('displayPathBundleForm')">
+            <i class="material-icons">add</i>
+        </md-button>
+    </div>
+    <md-list>
+        <md-list-item class="md-2-line" layout="row" ng-repeat="pb in policy.data['path-bundle'].data track by $index"
+                      ng-click="fillPathBundleForm(pb, $index)">
+            <div class="md-list-item-text" flex>
+                <h3>{{pb.data['bundle-id']}} </h3>
+                <p>Role: {{ pb.data.role}} </p>
+            </div>
+            <div>
+                <md-icon aria-label="Delete path bundle"
+                         ng-click="deletePathBundleFromList($index)">
+                    <i class="material-icons">clear</i>
+                </md-icon>
+            </div>
+        </md-list-item>
+    </md-list>
+    <div layout="row" flex></div>
+    <div layout="row">
+        <span flex></span>
+        <md-button ng-click="stepBack()">
+            Back
+        </md-button>
+        <md-button ng-disabled="!policy.data['path-bundle'].data.length" ng-click="stepForward()">
+            Next
+        </md-button>
+    </div>
+</div>
+
+<form name="pathBundleForm" ng-submit="addPathBundleToList(pathBundleForm)" novalidate ng-if="displayPathBundleForm" flex layout="column">
+    <div layout="row">
+        <md-input-container flex="50">
+            <label>Bundle Id</label>
+            <input name="bundleId" ng-model="pathBundle.data['bundle-id']"
+                   ng-required="!policy.data['path-bundle'].data.length">
+            <div ng-messages="pathBundleForm.bundleId.$error" md-auto-hide="false">
+                <div ng-message="required">Required field</div>
+            </div>
+        </md-input-container>
+
+        <md-input-container flex>
+            <label>Direction</label>
+            <md-select name="direction" ng-model="pathBundle.data.direction"
+                       aria-label="Path bundle, property direction"
+                       ng-change="clearEmptyValues(pathBundle.data, 'direction')">
+                <md-option value="{{undefined}}"></md-option>
+                <md-option ng-repeat="direction in ['forward', 'reverse']" value="{{direction}}">
+                    {{direction}}
+                </md-option>
+            </md-select>
+            <div ng-messages="pathBundleForm.direction.$error" md-auto-hide="false">
+                <div ng-message="required">Required field</div>
+            </div>
+        </md-input-container>
+    </div>
+    <div layout="row">
+        <md-input-container flex="50">
+            <label>Role</label>
+            <md-select name="role" ng-model="pathBundle.data.role"
+                       aria-label="Path bundle, property role"
+                       >
+                <md-option ng-repeat="role in ['active', 'backup']" value="{{role}}">
+                    {{role}}
+                </md-option>
+            </md-select>
+            <div ng-messages="pathBundleForm.role.$error" md-auto-hide="false">
+                <div ng-message="required">Required field</div>
+            </div>
+        </md-input-container>
+
+        <md-input-container flex>
+            <label>Active Path Bundle Id</label>
+            <input name="activePathBundleId" ng-model="pathBundle.data['active-bundle-id']"
+                   ng-required="pathBundle.data.role === 'backup'">
+            <div ng-messages="pathBundleForm.activePathBundleId.$error" md-auto-hide="false">
+                <div ng-message="required">Required field</div>
+            </div>
+        </md-input-container>
+    </div>
+    <div layout="row">
+        <md-input-container flex="50">
+            <label>Default Use</label>
+            <md-select name="defaultUse" ng-model="pathBundle.data['constraints']['default-use']"
+                       aria-label="Path bundle, property default-use"
+                       ng-required="!policy.data['path-bundle'].data.length">
+                <md-option ng-repeat="defaultuse in ['must-not-use', 'may-use']" value="{{defaultuse}}">
+                    {{defaultuse}}
+                </md-option>
+            </md-select>
+            <div ng-messages="pathBundleForm.defaultUse.$error" md-auto-hide="false">
+                <div ng-message="required">Required field</div>
+            </div>
+        </md-input-container>
+
+        <md-input-container flex>
+            <label>Max Path Cost</label>
+            <input name="maxPathCost" ng-model="pathBundle.data['constraints']['max-path-cost']">
+        </md-input-container>
+    </div>
+    <div layout="row" flex></div>
+    <div layout="row" class="md-actions">
+        <div class="modal-footer">
+            <span flex></span>
+            <md-button ng-click="hideForm('displayPathBundleForm')">
+                Back
+            </md-button>
+            <md-button  type="submit" ng-disabled="pathBundleForm.$invalid">
+                Add to List
+            </md-button>
+        </div>
+    </div>
+</form>

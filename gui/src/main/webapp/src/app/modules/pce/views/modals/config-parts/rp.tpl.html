@@ -1,0 +1,29 @@
+<md-subheader class="md-primary no-padding">Registration Global Parameters</md-subheader>
+<md-input-container flex>
+    <label>Maximum window</label>
+    <input name="maximumWindow"
+           type="number"
+           min="0"
+           ng-model="config['maximum-window']"
+           ng-init="config['maximum-window'] ? config['maximum-window'] : config['maximum-window'] = 0"
+           ng-required="true">
+
+    <div ng-messages="" md-auto-hide="false">
+        <div ng-message="required">Required field</div>
+    </div>
+</md-input-container>
+
+<md-input-container flex>
+    <label>Sampling period</label>
+
+    <input name="samplingPeriod"
+           type="number"
+           min="0"
+           ng-model="config['sampling-period']"
+           ng-init="config['sampling-period'] ? config['sampling-period'] : config['sampling-period'] = 0"
+           ng-required="true">
+
+    <div ng-messages="" md-auto-hide="false">
+        <div ng-message="required">Required field</div>
+    </div>
+</md-input-container>

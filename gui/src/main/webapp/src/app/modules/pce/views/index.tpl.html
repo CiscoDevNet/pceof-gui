@@ -1,0 +1,50 @@
+
+<div layout="row" class="h100 pce-wrapper" flex>
+    <section flex layout='column' class="h100">
+        <md-toolbar class="toolbar">
+            <div class="md-toolbar-tools">
+                <span class="product-label">PCE</span>
+                <span ng-class="{mainMenuItem: menuItem.subMenu === null}" ng-repeat="menuItem in mainMenu.items">
+                    <md-button class="md-primary menu-button" ng-class="{active: menuItem.active}" ng-href="{{menuItem.url}}" ng-if="menuItem.subMenu===null">
+                        <i class="material-icons top-menu-icon">{{menuItem.icon}}</i> {{menuItem.caption}}
+                    </md-button>
+                    <md-menu md-offset="0 60" class="mainMenu" ng-if="menuItem.subMenu!==null">
+                        <md-button class="md-primary menu-button" ng-class="{active: menuItem.active}" ng-click="$mdOpenMenu()">
+                            <i class="material-icons top-menu-icon">{{menuItem.icon}}</i> {{menuItem.caption}}
+                        </md-button>
+                        <md-menu-content width="3">
+                            <md-menu-item ng-repeat="subMenuItem in menuItem.subMenu.items" ng-class="{active: subMenuItem.active}">
+                                <md-button class="md-primary menu-button" ng-href="{{subMenuItem.url}}">
+                                    <i class="material-icons top-menu-icon">{{subMenuItem.icon}}</i> {{subMenuItem.caption}}
+                                </md-button>
+                            </md-menu-item>
+                        </md-menu-content>
+                    </md-menu>
+                </span>
+
+                <span flex></span>
+                <md-button ng-if="page === 'topology'" class="md-primary menu-button"
+                           ng-click="openSidePanel('side_panel_nodes')">
+                    <i class="material-icons top-menu-icon">device_hub</i> Nodes
+                </md-button>
+                <md-button ng-if="page === 'topology'" class="md-primary menu-button"
+                           ng-click="openSidePanel('side_panel_links')">
+                    <i class="material-icons top-menu-icon">trending_flat</i> Connections
+                </md-button>
+                <md-button ng-if="page === 'topology'" class="md-primary menu-button"
+                           ng-click="openSidePanel('policy/side_panel_policy')">
+                    <i class="material-icons top-menu-icon">wrap_text</i> Policy
+                </md-button>
+            </div>
+        </md-toolbar>
+
+        <div class="content-wrapper">
+            <!-- PROGRESS LINE -->
+            <md-progress-linear ng-if="showProgressLine" md-mode="indeterminate"></md-progress-linear>
+            <!-- CONTENT BASED ON PAGE -->
+            <section layout="row" class="h100" ng-include="viewPath + page +'.tpl.html'"></section>
+        </div>
+    </section>
+
+    <section ng-if="sidePanelPage" layout="row" onload="sidePanelCbk()" class="h100" ng-include="viewPath + sidePanelPage +'.tpl.html'">
+</div>

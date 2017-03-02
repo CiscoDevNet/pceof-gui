@@ -1,0 +1,43 @@
+<section ng-controller="ConfigurationFsModalCtrl" layout="column">
+
+    <md-subheader class="md-primary no-padding">Flow Statistic</md-subheader>
+    <md-input-container flex>
+        <label>Update Interval</label>
+
+        <input name="updateInterval"
+               type="number"
+               min="0"
+               ng-model="config['update-interval']"
+               ng-init="config['update-interval'] ? config['update-interval'] : config['update-interval'] = 0"
+               ng-required="true">
+
+        <div ng-messages="" md-auto-hide="false">
+            <div ng-message="required">Required field</div>
+        </div>
+    </md-input-container>
+
+    <md-input-container flex class="md-input-has-value">
+
+        <div layout="column">
+            <label>Included statistics</label>
+
+            <div>
+                <md-checkbox ng-model="statsList.ports" aria-label="ports" ng-change="updateConfigIncStats('ports')">ports</md-checkbox>
+                <md-checkbox ng-model="statsList.groups" aria-label="groups" ng-change="updateConfigIncStats('groups')">groups</md-checkbox>
+                <md-checkbox ng-model="statsList.flows" aria-label="flows" ng-change="updateConfigIncStats('flows')">flows</md-checkbox>
+                <md-checkbox ng-model="statsList.queues" aria-label="queues" ng-change="updateConfigIncStats('queues')">queues</md-checkbox>
+                <md-checkbox ng-model="statsList.meters" aria-label="meters" ng-change="updateConfigIncStats('meters')">meters</md-checkbox>
+            </div>
+        </div>
+
+        <div ng-messages="" md-auto-hide="false">
+            <div ng-message="required">Required field</div>
+        </div>
+    </md-input-container>
+
+</section>
+
+
+
+
+

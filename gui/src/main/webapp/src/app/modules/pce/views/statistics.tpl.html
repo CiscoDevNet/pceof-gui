@@ -1,0 +1,61 @@
+<div ng-controller="StatisticsCtrl" class="w100" id="statistics-container" layout-padding>
+    <md-content flex class="md-whiteframe-2dp overflow-visible h100" ng-hide="showProgressLine">
+        <md-toolbar class="md-table-toolbar md-default" ng-hide="filter.show" aria-hidden="false" style="">
+            <div class="md-toolbar-tools">
+                <h2 class="md-title">Statistics</h2>
+                <div class="flex" flex=""></div>
+                <button class="md-icon-button md-button md-ink-ripple" type="button" ng-click="filter.show = true">
+                    <md-icon class="material-icons">filter_list</md-icon>
+                    <div class="md-ripple-container"></div>
+                </button>
+            </div>
+        </md-toolbar>
+
+        <md-toolbar class="md-table-toolbar md-default ng-hide" ng-show="filter.show && !selected.length" aria-hidden="true" style="">
+            <div class="md-toolbar-tools">
+                <md-icon class="material-icons">search</md-icon>
+                <form class="ng-pristine ng-valid flex" name="filter.form" flex="">
+                    <input class="ng-pristine ng-valid ng-touched" type="text" placeholder="search" ng-model-options="filter.options" ng-model="query.filter" aria-invalid="false" style="">
+                </form>
+                <button class="md-icon-button md-button md-ink-ripple" type="button" ng-click="removeFilter()">
+                    <md-icon class="material-icons">close</md-icon>
+                    <div class="md-ripple-container"></div>
+                </button>
+            </div>
+        </md-toolbar>
+
+        <section class="filter-container">
+            <div layout="row">
+                <!-- SELECT STATISTICS TYPE -->
+                <md-input-container>
+                    <label>Select statistics</label>
+                    <md-select ng-model="selectedStatistics.main">
+                        <md-option ng-repeat="statistic in statsConfig.list" ng-value="statistic">
+                            {{statistic.name}}
+                        </md-option>
+                    </md-select>
+                </md-input-container>
+            </div>
+
+            <!-- SELECT VISIBLE DEVICE -->
+            <div layout="row" ng-show="selectedStatistics.main && selectedStatistics.main.template !== 'links'">
+                <section layout="row" layout-align="left center" class="device-selector-wrapper">
+                    <label class="md-float-label">Choose device:</label>
+                    <div
+                            isteven-multi-select
+                            input-model="devicesList"
+                            output-model="selectedDL"
+                            button-label="label"
+                            item-label="label"
+                            tick-property="checkedStatus"
+                            search-property="label"
+                            >
+                    </div>
+                </section>
+            </div>
+        </section>
+
+        <section ng-if="sType" ng-include="'app/modules/pce/views/statistics/statistics-'+ sType +'.tpl.html'"></section>
+
+    </md-content>
+</div>

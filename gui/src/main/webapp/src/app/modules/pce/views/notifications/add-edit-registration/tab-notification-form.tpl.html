@@ -1,0 +1,84 @@
+<div layout="column">
+	<md-subheader class="md-no-sticky">Notification details</md-subheader>
+
+	<div layout="row" class="layout-padding-lr15">
+		<md-input-container flex>
+			<label>Notification ID</label>
+			<input
+				name="notificationId"
+				ng-model="editBuffer._notification.id"
+				ng-required="true">
+			<div
+				ng-messages="addEditNotificationForm.notificationId.$error"
+				md-auto-hide="false">
+				<div ng-message="required">Required field</div>
+			</div>
+		</md-input-container>
+
+		<md-input-container flex>
+			<label>Window</label>
+			<input
+				type="number"
+				min="0"
+				name="notificationWindow"
+				ng-model="editBuffer._notification.window"
+				ng-required="true">
+			<div
+				ng-messages="addEditNotificationForm.notificationWindow.$error"
+				md-auto-hide="false">
+				<div ng-message="required">Required field</div>
+			</div>
+		</md-input-container>
+	</div>
+
+	<md-subheader class="md-no-sticky">Threshold details</md-subheader>
+
+	<div layout="row" class="layout-padding-lr15">
+		<md-input-container>
+			<label>Threshold type</label>
+			<md-select
+				name="thresholdType"
+				ng-model="editBuffer._notification.thresholdType"
+				ng-required="true">
+				<md-option>aggregate</md-option>
+				<md-option>individual</md-option>
+			</md-select>
+			<div
+				ng-messages="addEditNotificationForm.thresholdType.$error"
+				md-auto-hide="false">
+				<div ng-message="required">Required field</div>
+			</div>
+		</md-input-container>
+
+		<md-input-container>
+			<label>Threshold crossing</label>
+			<md-select
+				name="thresholdCrossing"
+				ng-model="editBuffer._notification.thresholdCrossing"
+				ng-required="true">
+				<md-option>up</md-option>
+				<md-option>down</md-option>
+			</md-select>
+			<div
+				ng-messages="addEditNotificationForm.thresholdCrossing.$error"
+				md-auto-hide="false">
+				<div ng-message="required">Required field</div>
+			</div>
+		</md-input-container>
+
+		<md-input-container flex>
+			<label>Threshold value</label>
+			<input
+				type="number"
+				min="0"
+				name="thresholdValue"
+				ng-model="editBuffer._notification.thresholdValue"
+				ng-required="true">
+			<div
+				ng-messages="addEditNotificationForm.thresholdValue.$error"
+				md-auto-hide="false">
+				<div ng-message="required">Required field</div>
+			</div>
+		</md-input-container>
+	</div>
+</div>

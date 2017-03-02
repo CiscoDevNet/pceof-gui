@@ -1,0 +1,46 @@
+{
+  "steps": [
+    {
+      "step-order": 1,
+      "step-id": "policy",
+      "step-name": "Policy",
+      "visible-value": ["Prefix", "Tunnel", "Element", "Segment"],
+      "template-file": "policy/add_dialog/parameters.tpl.html"
+    },
+    {
+      "step-order": 2,
+      "step-id": "flow-attributes",
+      "step-name": "Attributes",
+      "visible-value": ["Prefix", "Tunnel", "Element", "Segment"],
+      "template-file": "policy/add_dialog/specifications.tpl.html"
+    },
+    {
+      "step-order": 3,
+      "step-id": "path-bundle-list",
+      "step-name": "Bundles",
+      "visible-value": ["Prefix", "Tunnel", "Element", "Segment"],
+      "template-file": "policy/add_dialog/path_bundles.tpl.html"
+    },
+    {
+      "step-order": 4,
+      "step-id": "element-policy",
+      "step-name": "Element Policies",
+      "visible-value": ["Element"],
+      "template-file": "policy/add_dialog/element_policies.tpl.html"
+    },
+    {
+      "step-order": 5,
+      "step-id": "segment-policy",
+      "step-name": "Segment Policies",
+      "visible-value": ["Segment"],
+      "template-file": "policy/add_dialog/segment_policies.tpl.html"
+    },
+    {
+      "step-order": 6,
+      "step-id": "summary",
+      "step-name": "Summary",
+      "visible-value": ["Prefix", "Tunnel", "Element", "Segment"],
+      "template-file": "policy/add_dialog/summary.tpl.html"
+    }
+  ]
+}

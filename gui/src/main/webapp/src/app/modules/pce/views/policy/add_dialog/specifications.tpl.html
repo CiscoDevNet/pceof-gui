@@ -1,0 +1,119 @@
+<form name="policyAttributesForm" flex layout="column">
+    <div layout="row">
+        <md-input-container flex="50" ng-if="policy.type !== 'Tunnel'">
+            <label>Source Prefix</label>
+            <input name="sourcePrefix" ng-model="policy.data['flow-spec'].source['ip-prefix']"
+                   ng-required="true">
+            <div ng-messages="policyAttributesForm.sourcePrefix.$error" md-auto-hide="false">
+                <div ng-message="required">Required field</div>
+                <!--<div ng-message="pattern">Invalid format</div>-->
+            </div>
+        </md-input-container>
+
+        <md-input-container flex="30" ng-if="policy.type === 'Tunnel'">
+            <label>Source Node</label>
+            <input name="sourceNode" ng-model="policy.data['flow-spec'].source['node-id']"
+                   ng-required="true">
+            <div ng-messages="policyAttributesForm.sourceNode.$error" md-auto-hide="false">
+                <div ng-message="required">Required field</div>
+                <!--<div ng-message="pattern">Invalid format</div>-->
+            </div>
+        </md-input-container>
+        <md-input-container flex="20" ng-if="policy.type === 'Tunnel'">
+            <label>Source Port</label>
+            <input name="sourcePort" ng-model="policy.data['flow-spec'].source['tp-id']"
+                   ng-required="true">
+            <div ng-messages="policyAttributesForm.sourceNode.$error" md-auto-hide="false">
+                <div ng-message="required">Required field</div>
+                <!--<div ng-message="pattern">Invalid format</div>-->
+            </div>
+        </md-input-container>
+
+        <md-input-container flex>
+            <label>Destination Prefix</label>
+            <input name="destinationPrefix" ng-model="policy.data['flow-spec'].destination['ip-prefix']"
+                   ng-required="true">
+            <div ng-messages="policyAttributesForm.destinationPrefix.$error" md-auto-hide="false">
+                <div ng-message="required">Required field</div>
+                <!--<div ng-message="pattern">Invalid format</div>-->
+            </div>
+        </md-input-container>
+    </div>
+    <div layout="row">
+        <div class="flex-50 md-subheader md-primary">Source Port range</div>
+        <div class="flex md-subheader md-primary">Destination Port range</div>
+    </div>
+    <div layout="row">
+        <md-input-container flex-25>
+            <label>Start Port</label>
+            <input name="sourceStartPort" ng-model="policy.data['flow-spec']['source-port-range']['start-port']"
+                   ng-required="policy.data['flow-spec']['source-port-range']['end-port']">
+            <div ng-messages="policyAttributesForm.sourceStartPort.$error" md-auto-hide="false">
+                <div ng-message="required">Required field</div>
+            </div>
+        </md-input-container>
+        <md-input-container flex-25>
+            <label>End Port</label>
+            <input name="sourceEndPort" ng-model="policy.data['flow-spec']['source-port-range']['end-port']"
+                   ng-required="policy.data['flow-spec']['source-port-range']['start-port']">
+            <div ng-messages="policyAttributesForm.sourceEndPort.$error" md-auto-hide="false">
+                <div ng-message="required">Required field</div>
+            </div>
+        </md-input-container>
+        <md-input-container flex-25>
+            <label>Start Port</label>
+            <input name="destinationStartPort" ng-model="policy.data['flow-spec']['destination-port-range']['start-port']"
+                   ng-required="policy.data['flow-spec']['source-port-range']['end-port']">
+            <div ng-messages="policyAttributesForm.destinationStartPort.$error" md-auto-hide="false">
+                <div ng-message="required">Required field</div>
+            </div>
+        </md-input-container>
+        <md-input-container flex-25>
+            <label>End Port</label>
+            <input name="destinationEndPort" ng-model="policy.data['flow-spec']['destination-port-range']['end-port']"
+                   ng-required="policy.data['flow-spec']['source-port-range']['start-port']">
+            <div ng-messages="policyAttributesForm.destinationEndPort.$error" md-auto-hide="false">
+                <div ng-message="required">Required field</div>
+            </div>
+        </md-input-container>
+    </div>
+    <div layout="row">
+        <md-input-container class="md-block" flex="50">
+            <label>Kind</label>
+            <md-select name="kind" ng-model="policy.data['flow-attributes'].kind"
+                       aria-label="Flow attributes, property kind" ng-required="true">
+                <md-option ng-repeat="kind in ['unidirectional', 'bi-directional']" value="{{kind}}">
+                    {{kind}}
+                </md-option>
+            </md-select>
+            <div ng-messages="policyAttributesForm.kind.$error" md-auto-hide="false">
+                <div ng-message="required">Required field</div>
+            </div>
+        </md-input-container>
+        <md-input-container flex>
+            <label>IP Protocol</label>
+            <input name="ipProtocol" ng-model="policy.data['flow-spec']['ip-protocol']">
+        </md-input-container>
+    </div>
+
+    <div layout="row">
+        <md-input-container flex="50">
+            <label>Traffic Priority</label>
+            <input ng-model="policy.data['flow-attributes']['traffic-priority']">
+        </md-input-container>
+        <md-input-container flex>
+            <label>Bandwidth Limit</label>
+            <input ng-model="policy.data['flow-attributes']['bandwidth-limit']">
+        </md-input-container>
+    </div>
+    <div layout="row" flex></div>
+    <div layout="row">
+        <span flex></span>
+        <md-button ng-click="stepBack()">
+            Back
+        </md-button>
+        <md-button ng-disabled="policyAttributesForm.$invalid" ng-click="stepForward()">
+            Next
+        </md-button>
+    </div>
+</form>

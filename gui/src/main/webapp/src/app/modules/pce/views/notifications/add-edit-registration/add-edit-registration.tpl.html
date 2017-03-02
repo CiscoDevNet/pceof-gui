@@ -1,0 +1,54 @@
+<md-dialog ng-cloak>
+	<md-toolbar>
+		<div class="md-toolbar-tools">
+			<h2 ng-show="editConfig.regMode == 'add'">Add Registration</h2>
+			<h2 ng-show="editConfig.regMode == 'edit'">Edit Registration</h2>
+			<span flex></span>
+			<md-button ng-click="closeRegistrationDialog()" class="md-icon-button">
+				<md-icon aria-label="Close dialog">clear</md-icon>
+				<md-tooltip>Close dialog window</md-tooltip>
+			</md-button>
+		</div>
+	</md-toolbar>
+	<md-dialog-content style="width:600px; height:500px; ">
+		<md-tabs
+			layout-fill
+			md-selected="editConfig.selectedTabId">
+			<md-tab label="Registration" ng-click="editConfig.tab = 'registration'">
+				<form name="addEditRegistrationForm">
+					<div ng-include="'./app/modules/pce/views/notifications/add-edit-registration/tab-registration-form.tpl.html'"></div>
+				</form>
+			</md-tab>
+			<md-tab label="Notifications" ng-click="editConfig.tab = 'notifications'">
+				<form name="addEditNotificationForm">
+					<div ng-include="'./app/modules/pce/views/notifications/add-edit-registration/tab-notifications-list.tpl.html'"></div>
+				</form>
+			</md-tab>
+		</md-tabs>
+	</md-dialog-content>
+	<md-dialog-actions layout="row">
+		<span flex></span>
+		<div ng-hide="editConfig.tab == 'notifications' && (editConfig.notificationsMode == 'edit' || editConfig.notificationsMode == 'add')">
+			<md-button ng-click="closeRegistrationDialog()">
+				Close
+			</md-button>
+			<md-button ng-click="saveRegistration()" style="margin-right:20px;" ng-disabled="addEditRegistrationForm.$invalid || !isNotificationsArrayNotEmpty()">
+				Save
+			</md-button>
+		</div>
+		<!-- Notification form only -->
+		<div ng-show="editConfig.tab == 'notifications' && (editConfig.notificationsMode == 'edit' || editConfig.notificationsMode == 'add')">
+			<md-button ng-click="editConfig.notificationsMode = 'list'">
+				Back
+			</md-button>
+			<md-button ng-click="saveNotification()" style="margin-right:20px;" ng-disabled="addEditNotificationForm.$invalid">
+				<span ng-show="editConfig.notificationsMode == 'edit'">
+					Save notification
+				</span>
+				<span ng-show="editConfig.notificationsMode == 'add'">
+					Add to list
+				</span>
+			</md-button>
+		</div>
+	</md-dialog-actions>
+</md-dialog>

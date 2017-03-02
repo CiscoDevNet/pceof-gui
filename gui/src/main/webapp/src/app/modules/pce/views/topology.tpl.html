@@ -1,0 +1,4 @@
+<div ng-controller="TopologyCtrl" class="w100 h100" id="topology-container">
+    <md-button md-no-ink class="md-primary reload-button" ng-click="reloadTopo()"><i class="material-icons">sync</i> Reload topology</md-button>
+    <next-topology topology-data="topologyData" cbk-functions="cbkFunctions" dictionaries="nxDict" topo="nxTopology" topo-colors="nxTopoColors"></next-topology>
+</div>

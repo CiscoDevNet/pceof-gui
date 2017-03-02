@@ -1,0 +1,45 @@
+<md-subheader class="md-primary no-padding">Neighbour Discovery Configuration Parameters</md-subheader>
+<md-input-container flex>
+    <label>Timeout timer delay milliseconds</label>
+
+    <input name="timeoutTimer"
+           type="number"
+           min="0"
+           ng-model="config['timeout-timer-delay-millis']"
+           ng-init="config['timeout-timer-delay-millis'] ? config['timeout-timer-delay-millis'] : config['timeout-timer-delay-millis'] = 0"
+           ng-required="true">
+
+    <div ng-messages="" md-auto-hide="false">
+        <div ng-message="required">Required field</div>
+    </div>
+</md-input-container>
+
+<md-input-container flex>
+    <label>Remove obsolete macAddress milliseconds</label>
+
+    <input name="obsoleteMacAddress"
+           type="number"
+           min="0"
+           ng-model="config['remove-obsolete-macAddress-millis']"
+           ng-init="config['remove-obsolete-macAddress-millis'] ? config['remove-obsolete-macAddress-millis'] : config['remove-obsolete-macAddress-millis'] = 0"
+           ng-required="true">
+
+    <div ng-messages="" md-auto-hide="false">
+        <div ng-message="required">Required field</div>
+    </div>
+</md-input-container>
+
+<md-input-container flex>
+    <label>Trigger active discovery timeout milliseconds</label>
+
+    <input name="triggerActiveDiscovery"
+           type="number"
+           min="0"
+           ng-model="config['trigger-active-discovery-timeout-millis']"
+           ng-init="config['trigger-active-discovery-timeout-millis'] ? config['trigger-active-discovery-timeout-millis'] : config['trigger-active-discovery-timeout-millis'] = 0"
+           ng-required="true">
+
+    <div ng-messages="" md-auto-hide="false">
+        <div ng-message="required">Required field</div>
+    </div>
+</md-input-container>

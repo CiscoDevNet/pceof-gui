@@ -1,0 +1,93 @@
+<div ng-controller="AddressMappingsCtrl" layout="row" class="h100 pce-wrapper" id="flow-management-container" flex>
+    <section flex layout='column' class="h100">
+
+        <md-content flex class="md-whiteframe-2dp">
+            <md-toolbar class="md-table-toolbar md-default">
+                <div class="md-toolbar-tools">
+                    <h2 class="md-title" ng-hide="mappingsFilter.show">Address mappings</h2>
+                    <md-icon class="material-icons" ng-show="mappingsFilter.show">search</md-icon>
+                    <form class="ng-pristine ng-valid flex" name="mappingsFilter.form" flex="" ng-show="mappingsFilter.show">
+                        <input class="ng-pristine ng-valid ng-touched"
+                               type="text"
+                               placeholder="search"
+                               ng-model-options="mappingsFilter.options"
+                               ng-model="mappingsTableQuery.filter"
+                               ng-change="setCheckedMappingsCount()"
+                               aria-invalid="false" style="">
+                    </form>
+                    <div class="flex" flex=""></div>
+                    <md-button class="md-icon-button" type="button" ng-click="mappingsFilter.show = true" ng-hide="mappingsFilter.show">
+                        <md-icon class="material-icons">filter_list</md-icon>
+                    </md-button>
+                    <md-button class="md-icon-button md-ink-ripple" type="button" ng-click="removeMappingsFilter()" ng-show="mappingsFilter.show">
+                        <md-icon class="material-icons">close</md-icon>
+                        <div class="md-ripple-container"></div>
+                    </md-button>
+                    <md-button class="md-icon-button" ng-click="refreshTable()">
+                        <md-icon>refresh</md-icon>
+                        <md-tooltip md-direction="bottom">
+                            Refresh
+                        </md-tooltip>
+                    </md-button>
+                    <md-button class="md-icon-button" ng-click="renewChecked()">
+                        <md-icon>autorenew</md-icon>
+                        <md-tooltip md-direction="bottom">
+                            Renew selected
+                        </md-tooltip>
+                    </md-button>
+                </div>
+            </md-toolbar>
+            <md-table-container ng-if="addressMappingsList.data.length">
+                <table md-table class="addressMappings">
+                    <thead md-head md-order="mappingsTableQuery.order">
+                      <tr md-row>
+                          <th md-column class="md-col">
+
+                              <md-checkbox aria-label="Select all"
+                                           ng-checked="checkAllStatus.checked"
+                                           md-indeterminate="checkAllStatus.indeterminate"
+                                           ng-click="toggleAll()">
+                              </md-checkbox>
+                              <md-tooltip md-direction="top" ng-if="checkAllStatus.checked">
+                                  Deselect all
+                              </md-tooltip>
+                              <md-tooltip md-direction="top" ng-if="!checkAllStatus.checked">
+                                  Select all
+                              </md-tooltip>
+                          </th>
+                          <th md-column md-order-by="data['ip-address']"><span>IP Address</span></th>
+                          <th md-column md-order-by="data['mac-address']"><span>MAC Address</span></th>
+                          <th md-column md-order-by="data['timestamp']"><span>Discovered</span></th>
+                          <th md-column md-order-by="expirationTime"><span>Expiration</span></th>
+                      </tr>
+                    </thead>
+                    <tbody md-body>
+                        <tr md-row ng-repeat="addressMapping in addressMappingsList.data | filter: mappingsTableQuery.filter  | orderBy : mappingsTableQuery.order | limitTo: mappingsTableQuery.limit : (mappingsTableQuery.page -1) * mappingsTableQuery.limit">
+                            <td md-cell>
+                                <md-checkbox ng-checked="addressMapping.checked" aria-label="Select" ng-click="toggleAddressMapping(addressMapping)">
+                                    {{ item }}
+                                </md-checkbox>
+                            </td>
+                            <td md-cell>{{addressMapping.data['ip-address']}}</td>
+                            <td md-cell>{{addressMapping.data['mac-address']}}</td>
+                            <td md-cell>{{addressMapping.data['timestamp'] | date: 'short'}}</td>
+                            <td md-cell ng-if="addressMapping.expirationCountDown > 0">{{addressMapping.expirationCountDown | date: 'mm:ss'}} ({{addressMapping.expirationTime | date: 'short'}})</td>
+                            <td md-cell ng-if="addressMapping.expirationCountDown <= 0" style="color: red;">00:00 ({{addressMapping.expirationTime | date: 'short'}})</td>
+                        </tr>
+
+                    </tbody>
+                </table>
+                <md-table-pagination md-limit="mappingsTableQuery.limit"
+                                     md-page="mappingsTableQuery.page"
+                                     md-options="mappingsTableQuery.options"
+                                     md-total="{{addressMappingsList.data.length}}"
+                                     md-page-select="true">
+                </md-table-pagination>
+            </md-table-container>
+            <span style="padding-left: 25px;" ng-if="addressMappingsList.data.length === 0">
+                List of Address mappings is empty.
+            </span>
+
+        </md-content>
+    </section>
+</div>

@@ -1,0 +1,171 @@
+<section layout="column" class="h100" ng-controller="NodesCtrl">
+    <md-sidenav class="md-sidenav-right md-whiteframe-z2 h100" md-component-id="right" md-is-locked-open="sidePanelPage" >
+        <md-toolbar>
+            <div class="md-toolbar-tools">
+                <h2>
+                    <span>Nodes</span>
+                </h2>
+                <span flex></span>
+                <md-button ng-click="closeSidePanel()" class="md-button">Close panel</md-button>
+            </div>
+        </md-toolbar>
+        <md-content flex>
+
+
+        <div layout-fill layout="row" >
+            <md-list layout-fill ng-show="selectedNode === null">
+                <md-list-item class="md-2-line" ng-repeat="node in networkData.node | orderBy: ['data[\'type\']', 'data[\'node-id\']']"
+                      layout="row"
+                      ng-click="selectNode(node)"
+                      ng-mouseenter="highlightNode(node)"
+                      ng-mouseleave="fadeAllIfNoNodeSelected()">
+                    <i class="fa fa-circle status-circle {{node.data['ofl3-topology:status']}}" tooltip="Status: {{node.data['ofl3-topology:status']}}" flex="5"></i>
+                    <div class="md-list-item-text" flex>
+                        <h3>{{node.data['node-id']}} </h3>
+                        <p>{{node.data['ofl3-topology:type'].replace('ofl3-topology:', '')}}</p>
+                    </div>
+                </md-list-item>
+            </md-list>
+            <md-content layout-fill ng-hide="selectedNode === null">
+                <div layout="row" class="layout-padding-lr15">
+                    <ul class="breadcrumbs">
+                        <li class="breadcrumb" ng-click="deselectNode()">Nodes</li>
+                        <li class="breadcrumb"><i class="material-icons">keyboard_arrow_right</i></li>
+                        <li class="breadcrumb">{{selectedNode.data['node-id']}}</li>
+                    </ul>
+                </div>
+                <md-divider></md-divider>
+                <md-subheader class="md-primary">Node info</md-subheader>
+                <div layout="row" class="layout-padding-lr15">
+                    <span flex="50"><strong>Node ID</strong></span><span flex>{{selectedNode.data['node-id']}}</span>
+                </div>
+                <div layout="row" class="layout-padding-lr15">
+                    <span flex="50"><strong>Status</strong></span><span flex>{{selectedNode.data['ofl3-topology:status']}}</span>
+                </div>
+                <div layout="row" class="layout-padding-lr15">
+                    <span flex="50"><strong>Type</strong></span><span flex>{{selectedNode.data['ofl3-topology:type'].replace('ofl3-topology:', '')}}</span>
+                </div>
+                <div layout="row" class="layout-padding-lr15" ng-if="selectedNode.data['ofl3-topology:datapath-id']">
+                    <span flex="50"><strong>Data Path ID</strong></span><span flex>{{decToHex(selectedNode.data['ofl3-topology:datapath-id'])}}</span>
+                </div>
+                <div layout="row" class="layout-padding-lr15">
+                    <span flex="50"><strong>Data Path Type</strong></span><span flex>{{selectedNode.data['ofl3-topology:datapath-type']}}</span>
+                </div>
+
+                <md-divider ng-if="!$last" style="margin-top: 10px;" ng-show="selectedNode.data['ofl3-topology:subnet']"></md-divider>
+                <md-subheader class="md-primary" ng-show="selectedNode.data['ofl3-topology:subnet']">Subnets ({{selectedNode.data['ofl3-topology:subnet'].length}})</md-subheader>
+
+                <md-list layout-fill>
+                    <md-list-item class="md-2-line" ng-repeat="subnet in selectedNode.data['ofl3-topology:subnet']"
+                                  layout="row" ng-click="a=1;">
+                        <div class="md-list-item-text" flex>
+                            <h3>{{subnet}}</h3>
+                        </div>
+                    </md-list-item>
+                </md-list>
+
+                <md-divider ng-if="!$last" style="margin-top: 10px;"></md-divider>
+                <md-subheader class="md-primary portsHeader">
+                    <div layout="row" class="">
+                        <h3><span>Ports ({{selectedNode.data['ietf-network-topology:termination-point'].length}})</span></h3>
+                        <span flex></span>
+
+                        <i class="icon-collapse-alt"></i>
+                        <md-button ng-click="selectedNode.expandAllPorts()" class="md-button md-primary">
+                            <md-tooltip md-direction="bottom">
+                                Expand all
+                            </md-tooltip>
+                            <i class="fa fa-expand"></i>
+                        </md-button>
+                        <md-button ng-click="selectedNode.collapseAllPorts()" class="md-button md-primary">
+                            <md-tooltip md-direction="bottom">
+                                Collapse all
+                            </md-tooltip>
+                            <i class="fa fa-compress"></i>
+                        </md-button>
+                    </div>
+                </md-subheader>
+
+
+
+
+
+
+                <md-list layout-fill class="portsList">
+                    <md-list-item class="md-2-line" ng-repeat="port in selectedNode.data['ietf-network-topology:termination-point'] | orderBy: 'data[\'tp-id\']'"
+                                  layout="row"
+                                  ng-click="port.toggleExpanded()"
+                                  ng-mouseenter="highlightPortLink(port)"
+                                  ng-mouseleave="highlightNode(selectedNode)">
+                        <div class="md-list-item-text" flex>
+                            <i class="fa fa-circle status-circle {{port.data['ofl3-topology:status']}}" tooltip="Status: {{port.data['ofl3-topology:status']}}" flex="5"></i>
+                            <h3>{{port.data['tp-id']}} ({{port.data['ofl3-topology:max-bandwidth'] > 0 ? ((port.data['ofl3-topology:max-bandwidth']/1000000 | number : 1) + 'Mb/s') : 'N/A'}})</h3>
+                            <md-content layout-margin ng-show="port.expanded" class="md-whiteframe-2dp ng-scope flex portDetails">
+                                <div layout="row" class="">
+                                    <span flex="50"><strong>Status</strong></span><span flex>{{port.data['ofl3-topology:status']}}</span>
+                                </div>
+                                <div layout="row" class="">
+                                    <span flex="50"><strong>Max Bandwidth</strong></span><span flex>{{port.data['ofl3-topology:max-bandwidth']/1000000 | number : 1}} Mb/s</span>
+                                </div>
+                                <div layout="row" class="">
+                                    <span flex="50"><strong>MAC</strong></span><span flex>{{port.data['ofl3-topology:mac-address']}}</span>
+                                </div>
+                                <div layout="row" class="">
+                                    <span flex="50"><strong>Port ID</strong></span><span flex>{{port.data['ofl3-topology:port-id']}}</span>
+                                </div>
+                                <div layout="row" class="">
+                                    <span flex="50"><strong>Cost</strong></span><span flex>{{port.data['ofl3-topology:admin-cost']}}</span>
+                                </div>
+                                <div layout="row" class="" ng-if="port.networkLinkIds.length">
+                                    <span flex="50"><strong>Link</strong></span>
+                                    <span flex>
+                                        <p ng-repeat="linkId in port.networkLinkIds">
+                                            {{linkId}}
+                                            <span ng-hide="$last">,</span>
+                                        </p>
+                                    </span>
+
+                                </div>
+
+                                <md-divider ng-if="!$last" style="margin-top: 10px;" ng-show="port.data['ofl3-topology:ip-address']"></md-divider>
+                                <md-subheader class="md-primary" ng-show="port.data['ofl3-topology:ip-address']">IP Addresses ({{port.data['ofl3-topology:ip-address'].length}})</md-subheader>
+
+                                <!--<div layout="column">-->
+                                    <!--<div flex>aaaaaa</div>-->
+                                    <!--<div flex>aaaaaa</div>-->
+                                    <!--<div flex>aaaaaa</div>-->
+                                <!--</div>-->
+
+                                <div ng-show="port.data['ofl3-topology:ip-address']" layout="column">
+                                    <div class="md-2-line address" ng-repeat="address in port.data['ofl3-topology:ip-address']" flex>
+                                        <div class="md-list-item-text" flex>
+                                            <h3>{{address}}</h3>
+                                        </div>
+                                        <div class="md-list-item-text" ng-show="port.bgpRoutes[address].length">
+                                            <md-subheader class="md-primary">BGP Routes ({{port.bgpRoutes[address].length}})</md-subheader>
+                                            <div class="route" ng-repeat="route in port.bgpRoutes[address]">
+                                                <div layout="row" class="">
+                                                    <span flex="50"><strong>IP Prefix</strong></span><span flex>{{route.data['ip-prefix']}}</span>
+                                                </div>
+                                                <div layout="row" class="">
+                                                    <span flex="50"><strong>VRF Name</strong></span><span flex>{{route.data['vrf-name']}}</span>
+                                                </div>
+
+                                            </div>
+
+                                        </div>
+
+                                    </div>
+                                </div>
+
+                            </md-content>
+                        </div>
+                    </md-list-item>
+                </md-list>
+            </md-content>
+
+        </div>
+        </md-content>
+
+    </md-sidenav>
+</section>

@@ -1,0 +1,141 @@
+<section class="filter-container">
+    <div layout="row">
+        <!-- SELECT SUB-STATISTICS TYPE -->
+        <md-input-container ng-show="selectedStatistics.main.subStatistics.length">
+            <label>Select statistics type</label>
+            <md-select ng-model="selectedStatistics.sub">
+                <md-option ng-repeat="subStatistic in selectedStatistics.main.subStatistics" ng-value="subStatistic">
+                    {{subStatistic.name}}
+                </md-option>
+            </md-select>
+        </md-input-container>
+    </div>
+
+    <div layout="row">
+        <!-- SELECT REGISTRATION -->
+        <md-input-container>
+            <label>Select registration</label>
+            <md-select ng-model="linkStatisticsSetup['registration-id']" md-on-close="updateLinkStats()">
+                <md-option ng-repeat="registration in linkStatisticsRegistrations" ng-value="registration">
+                    {{registration['registration-id']}}
+                </md-option>
+            </md-select>
+        </md-input-container>
+    </div>
+
+    <section ng-if="linkStatisticsSetup['registration-id']">
+        <div layout="row">
+            <!-- RESPONSE TIME -->
+            <md-input-container>
+                <label>Response type</label>
+                <md-select ng-model="linkStatisticsSetup['response-type']" md-on-close="updateLinkStats()">
+                    <md-option ng-repeat="type in statsConfig.linkStatsConfig['response-types']" ng-value="type">
+                        {{type}}
+                    </md-option>
+                </md-select>
+            </md-input-container>
+
+            <!-- RESPONSE UNITS -->
+            <md-input-container>
+                <label>Response units</label>
+                <md-select ng-model="linkStatisticsSetup['response-units']" md-on-close="updateLinkStats()">
+                    <md-option ng-repeat="unit in statsConfig.linkStatsConfig['response-units']" ng-value="unit">
+                        {{unit}}
+                    </md-option>
+                </md-select>
+            </md-input-container>
+        </div>
+
+        <div layout="row">
+            <!-- SELECT WINDOW PROPERTY -->
+            <md-input-container>
+                <label>Window</label>
+                <input type="text" ng-model="linkStatisticsSetup.window" required ng-change="validateLsWindow()" ng-model-options="{debounce: 500}">
+            </md-input-container>
+
+            <!-- ORIGINAL SAMPLES -->
+            <div layout layout-align="center center">
+                <div flex>
+                    <md-checkbox ng-model="linkStatisticsSetup['original-samples']" aria-label="Orig. samples" ng-change="updateLinkStats()">
+                        Orig. samples
+                    </md-checkbox>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+
+    <!-- SELECT VISIBLE COLUMNS -->
+    <div layout="row" ng-show="table.columns">
+        <section layout="row" layout-align="left center" class="device-selector-wrapper">
+            <label class="md-float-label">Choose visible columns:</label>
+            <div
+                    isteven-multi-select
+                    input-model="table.columns"
+                    output-model="table.vColumns"
+                    button-label="name"
+                    item-label="name"
+                    tick-property="show"
+                    search-property="name"
+                    >
+            </div>
+        </section>
+    </div>
+
+</section>
+
+<!-- Summary table -->
+<section ng-if="sTable.data && sTable.columns">
+    <!-- Table title -->
+    <md-toolbar class="md-table-toolbar md-default">
+        <div class="md-toolbar-tools" layout-align="space-between center">
+            <h2 class="md-title">Summary table</h2>
+            <md-button md-no-ink class="md-primary reload-button" ng-click="updateLinkStats()"><i class="material-icons">sync</i> Reload data</md-button>
+        </div>
+    </md-toolbar>
+
+    <!-- Table data -->
+    <md-table-container >
+        <table md-table>
+            <thead md-head md-order="sTableOrder">
+            <tr md-row>
+                <th md-column ng-repeat="column in sTable.columns"  md-order-by="{{column.name}}"><span>{{column.name}}</span></th>
+            </tr>
+            </thead>
+            <tbody md-body>
+            <tr md-row ng-repeat="data in sTable.vData | orderBy: sTableOrder">
+                <td md-cell ng-repeat="column in sTable.columns">{{data[column.name]}}</td>
+            </tr>
+            </tbody>
+        </table>
+    </md-table-container>
+</section>
+
+<!-- Original samples table -->
+<section ng-if="table.data && table.vColumns">
+    <!-- Table title -->
+    <md-toolbar class="md-table-toolbar md-default">
+        <div class="md-toolbar-tools">
+            <h2 class="md-title">Original samples table</h2>
+        </div>
+    </md-toolbar>
+
+    <!-- Table data -->
+    <md-table-container >
+        <table md-table>
+            <thead md-head md-order="query.order">
+            <tr md-row>
+                <th md-column ng-repeat="column in table.vColumns"  md-order-by="{{column.name}}"><span>{{column.name}}</span></th>
+            </tr>
+            </thead>
+            <tbody md-body>
+            <tr md-row ng-repeat="data in table.vData | orderBy: query.order"><!--| filter: query.filter | limitTo: query.limit : (query.page -1) * query.limit-->
+                <td md-cell ng-repeat="column in table.vColumns">{{data[column.name]}}</td>
+            </tr>
+            </tbody>
+        </table>
+    </md-table-container>
+
+    <!--<md-table-pagination md-limit="query.limit" md-page="query.page" md-total="{{ table.vData.length }}" md-options="[1,2,5,10]" md-page-select="options.pageSelector" md-boundary-links="options.boundaryLinks"></md-table-pagination>-->
+</section>

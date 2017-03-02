@@ -1,0 +1,72 @@
+<md-dialog ng-cloak>
+    <form name="bgpRouteForm">
+        <md-toolbar>
+            {{constants.URL}}
+            <div class="md-toolbar-tools">
+                <h2>BGP Route</h2>
+                <span flex></span>
+            </div>
+        </md-toolbar>
+        <md-dialog-content style="width:600px;">
+            <div layout="column" class="layout-padding-lr15">
+                <div layout="row">
+                    <md-input-container flex>
+                        <label>IP Prefix</label>
+                        <input name="ipPrefix"
+                               ng-model="bgpRoute.data['ip-prefix']"
+                               autocomplete="off"
+                               ng-required="true"
+                               ng-disabled="bgpRoute.data['ip-prefix'].length && bgpRoute.data['ip-prefix']===oldBgpRoute.data['ip-prefix']"
+                               ng-pattern="constants.regexps['ip-prefix']">
+
+                        <div ng-messages="bgpRouteForm.ipPrefix.$error" md-auto-hide="false">
+                            <div ng-message="required">Required field</div>
+                            <div ng-message="pattern">Expected ip-prefix format</div>
+                        </div>
+                    </md-input-container>
+                    <md-input-container flex>
+                        <label>VRF Name</label>
+                        <input name="vrfName" ng-model="bgpRoute.data['vrf-name']" ng-required="true">
+                        <div ng-messages="bgpRouteForm.vrfName.$error" md-auto-hide="false">
+                            <div ng-message="required">Required field</div>
+                        </div>
+                    </md-input-container>
+                </div>
+                <div layout="row">
+                    <md-input-container flex>
+                        <label>Next Hop</label>
+                        <md-chips ng-model="bgpRoute.data['next-hop']"
+                                  placeholder="Add an item"
+                                  md-on-add="checkHops()"
+                                  md-on-remove="checkHops()" >
+                            <input name="nextHopVal" ng-model="nextHopVal" autocomplete="off" ng-pattern="constants.regexps['ip-address']" />
+                        </md-chips>
+                        <div ng-messages="bgpRouteForm.nextHopVal.$error || bgpRouteForm.nextHopVal.invalidHops.length" md-auto-hide="false">
+                            <div ng-repeat="invalidHop in bgpRouteForm.nextHopVal.invalidHops" style="font-size: 12px; padding-top: 5px; line-height: 14px;">
+                                {{invalidHop}} is not ip-address.
+                            </div>
+                            <div ng-message="pattern">
+                                {{bgpRouteForm.nextHopVal.$viewValue}} is not ip-address.
+                            </div>
+                        </div>
+                    </md-input-container>
+                </div>
+                <div layout="row">
+                    <div class="error">
+                        <p ng-repeat="msg in errMsgs track by $index">{{msg}}</p>
+
+                    </div>
+                </div>
+            </div>
+        </md-dialog-content>
+        <md-dialog-actions layout="row">
+            <span flex></span>
+            <md-button ng-click="cancelDialog()">
+                Close
+            </md-button>
+            <md-button ng-click="saveData()" style="margin-right:20px;" ng-disabled="bgpRouteForm.$invalid || bgpRouteForm.nextHopVal.invalidHops.length">
+                Save
+            </md-button>
+        </md-dialog-actions>
+    </form>
+</md-dialog>

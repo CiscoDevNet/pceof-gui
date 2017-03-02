@@ -1,0 +1,70 @@
+<md-sidenav class="md-sidenav-right md-whiteframe-z2" md-component-id="right" md-is-locked-open="sidePanelPage">
+    <md-toolbar>
+        <div class="md-toolbar-tools">
+            <h2>
+                <span>Registration detail</span>
+            </h2>
+            <span flex></span>
+            <md-button ng-click="closeSidePanel()" class="md-button">Close panel</md-button>
+        </div>
+    </md-toolbar>
+
+    <md-content flex class="md-whiteframe-2dp" ng-if="sidePanelObject">
+
+        <md-subheader class="md-primary">Registration properties</md-subheader>
+        <div layout="row" class="layout-padding-5-15">
+            <span flex="35"><strong>Registration Id</strong></span><span flex>{{ sidePanelObject.data['registration-id'] }}</span>
+        </div>
+        <md-divider></md-divider>
+        <md-subheader class="md-primary">Links</md-subheader>
+        <div layout="row">
+            <md-list layout-fill>
+                <md-list-item class="md-2-line" layout="row"
+                              ng-repeat="link in sidePanelObject.data.link">
+                    <div class="md-list-item-text" flex>
+                        <h3>{{ link }} </h3>
+                    </div>
+                </md-list-item>
+            </md-list>
+        </div>
+        <md-divider></md-divider>
+        <md-subheader class="md-primary">Notifications</md-subheader>
+        <div layout="row">
+
+			<div ng-hide="sidePanelObject.data.notification.data.length" layout-fill class="layout-padding-5-15 md-3-line">
+				There are no notifications.
+			</div>
+
+            <md-list layout-fill>
+                <md-list-item class="md-3-line" layout="row"
+                              ng-repeat="notification in sidePanelObject.data.notification.data">
+                    <div layout-fill class="layout-margin-b15">
+                        <div layout="row" class="layout-padding-t5">
+                            <span flex="35"><strong>Notification Id</strong></span>
+                            <span flex>{{ notification.data['notification-id'] }}</span>
+                        </div>
+                        <div layout="row" class="layout-padding-t5">
+                            <span flex="35"><strong>Window</strong></span>
+                            <span flex>{{ notification.data.window }}</span>
+                        </div>
+                        <div layout="row" class="layout-padding-t5">
+                            <span flex="35"><strong>Threshold type</strong></span>
+                            <span flex>{{ notification.data.threshold.type }}</span>
+                        </div>
+                        <div layout="row" class="layout-padding-t5">
+                            <span flex="35"><strong>Threshold crossing</strong></span>
+                            <span flex>{{ notification.data.threshold.crossing }}</span>
+                        </div>
+                        <div layout="row" class="layout-padding-t5">
+                            <span flex="35"><strong>Threshold value</strong></span>
+                            <span flex>{{ notification.data.threshold['threshold-value'] }}</span>
+                        </div>
+                        <md-divider></md-divider>
+                    </div>
+                </md-list-item>
+            </md-list>
+        </div>
+
+    </md-content>
+
+</md-sidenav>
