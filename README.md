@@ -1,4 +1,4 @@
-# OpenDaylight PCE-Openflow <a style="float:right " href="https://dcloud.cisco.com/"><img src="dcloud.png" alt="IMAGE ALT TEXT HERE" align="right"/></a>   
+# OpenDaylight PCE-Openflow <a style="float:right " href="https://dcloud.cisco.com/"><img src="dcloud.png" alt="https://dcloud.cisco.com" align="right"/></a>   
 
 
 <img src="https://raw.githubusercontent.com/CiscoDevNet/pceof-gui/master/screenshots/pceof.png" alt="alt text" width=300px height=300px>
